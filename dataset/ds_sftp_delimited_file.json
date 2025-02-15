@@ -1,0 +1,62 @@
+{
+	"name": "ds_sftp_delimited_file",
+	"properties": {
+		"description": "Data set for a delimited file on an SFTP source.",
+		"linkedServiceName": {
+			"referenceName": "ls_pattern_sftp",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"sftp_address": {
+					"value": "@dataset().sftp_address",
+					"type": "Expression"
+				},
+				"sftp_port": {
+					"value": "@dataset().sftp_port",
+					"type": "Expression"
+				},
+				"sftp_user_name": {
+					"value": "@dataset().sftp_username",
+					"type": "Expression"
+				},
+				"sftp_kv_password": {
+					"value": "@dataset().sftp_password",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"sftp_address": {
+				"type": "string"
+			},
+			"sftp_port": {
+				"type": "string"
+			},
+			"sftp_username": {
+				"type": "string"
+			},
+			"sftp_password": {
+				"type": "string"
+			},
+			"folder_root": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"folderPath": {
+					"value": "@dataset().folder_root",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"nullValue": "~",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
