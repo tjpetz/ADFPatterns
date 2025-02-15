@@ -1,0 +1,11 @@
+{
+	"name": "ls_pattern_kv",
+	"properties": {
+		"description": "Link Service to the Key Vault to manage secrets and certificates",
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://tjpetz-kv001.vault.azure.net/"
+		}
+	}
+}
