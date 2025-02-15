@@ -1,0 +1,102 @@
+{
+	"name": "sftp_ingest_csv_to_lake",
+	"properties": {
+		"description": "Ingest a CSV (or other text file) from an SFTP site into a data lake.",
+		"activities": [
+			{
+				"name": "Copy SFTP CSV to Lake",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "SftpReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false,
+							"disableChunking": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_sftp_delimited_file",
+						"type": "DatasetReference",
+						"parameters": {
+							"sftp_address": {
+								"value": "@pipeline().parameters.sftp_address",
+								"type": "Expression"
+							},
+							"sftp_port": {
+								"value": "@pipeline().parameters.sftp_port",
+								"type": "Expression"
+							},
+							"sftp_username": {
+								"value": "@pipeline().parameters.sftp_password",
+								"type": "Expression"
+							},
+							"sftp_password": {
+								"value": "@pipeline().parameters.sftp_password",
+								"type": "Expression"
+							},
+							"folder_root": {
+								"value": "@pipeline().parameters.root_folder",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_datalake_raw",
+						"type": "DatasetReference",
+						"parameters": {
+							"SystemName": "PatternSource",
+							"SubSystemName": "Pattern1",
+							"RawFileName": "RawFileName"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"sftp_address": {
+				"type": "string"
+			},
+			"sftp_port": {
+				"type": "string"
+			},
+			"sftp_username": {
+				"type": "string"
+			},
+			"sftp_password": {
+				"type": "string"
+			},
+			"root_folder": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Ingest"
+		},
+		"annotations": []
+	}
+}
