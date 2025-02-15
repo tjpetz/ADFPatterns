@@ -4,7 +4,13 @@
 		"description": "Source files in pattern example.  This is a zipped file.",
 		"linkedServiceName": {
 			"referenceName": "ls_pattern_sftp",
-			"type": "LinkedServiceReference"
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"sftp_address": "tjpsftpsource0001.blob.core.windows.net",
+				"sftp_port": 22,
+				"sftp_user_name": "tjpsftpsource0001.test",
+				"sftp_kv_password": "adf-pattern-sftp-password"
+			}
 		},
 		"parameters": {
 			"SourcePath": {
