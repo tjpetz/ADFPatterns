@@ -13,7 +13,7 @@
 			},
 			"sftp_user_name": {
 				"type": "string",
-				"defaultValue": "test"
+				"defaultValue": "tjpsftpsource0001.test"
 			},
 			"sftp_kv_password": {
 				"type": "string",
