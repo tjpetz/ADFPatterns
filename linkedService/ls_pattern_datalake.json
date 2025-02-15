@@ -1,0 +1,12 @@
+{
+	"name": "ls_pattern_datalake",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Link Service for the Data Lake for the ADF pattern examples.",
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://tjpdatalake0001.dfs.core.windows.net/"
+		}
+	}
+}

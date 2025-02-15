@@ -1,0 +1,172 @@
+{
+	"name": "pl_pattern1_poll_sftp",
+	"properties": {
+		"description": "Upon trigger poll an SFTP site to determine if a file is available.  If it is copy it to Raw otherwise exit with success.",
+		"activities": [
+			{
+				"name": "FindFiles",
+				"description": "Get a list of files on the source.",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_pattern1_ftp_file",
+						"type": "DatasetReference",
+						"parameters": {
+							"SourcePath": {
+								"value": "@pipeline().parameters.SourcePath",
+								"type": "Expression"
+							},
+							"SourceFileName": " "
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "SftpReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false,
+						"disableChunking": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "CopyEachFile",
+				"description": "Copy the files from source to target.",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "FindFiles",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('FindFiles').output.childItems",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy SFTP to Raw Lake",
+							"description": "Copy a file from SFTP source to the Raw folder of the Lake.",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "SftpReadSettings",
+										"recursive": false,
+										"deleteFilesAfterCompletion": false,
+										"disableChunking": false
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings",
+										"copyBehavior": "PreserveHierarchy"
+									}
+								},
+								"enableStaging": false,
+								"logSettings": {
+									"enableCopyActivityLog": true,
+									"copyActivityLogSettings": {
+										"logLevel": "Info",
+										"enableReliableLogging": false
+									},
+									"logLocationSettings": {
+										"linkedServiceName": {
+											"referenceName": "ls_pattern_logs",
+											"type": "LinkedServiceReference"
+										},
+										"path": "adflogs"
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_pattern1_ftp_file",
+									"type": "DatasetReference",
+									"parameters": {
+										"SourcePath": {
+											"value": "@pipeline().parameters.SourcePath",
+											"type": "Expression"
+										},
+										"SourceFileName": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_datalake_raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"SystemName": {
+											"value": "@pipeline().parameters.SystemName",
+											"type": "Expression"
+										},
+										"SubSystemName": {
+											"value": "@pipeline().parameters.SubSystemName",
+											"type": "Expression"
+										},
+										"RawFileName": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"SourcePath": {
+				"type": "string",
+				"defaultValue": "/"
+			},
+			"SystemName": {
+				"type": "string",
+				"defaultValue": "PatternSource"
+			},
+			"SubSystemName": {
+				"type": "string",
+				"defaultValue": "Pattern1"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-06-27T12:01:47Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,35 @@
+{
+	"name": "ds_pattern1_ftp_file",
+	"properties": {
+		"description": "Source files in pattern example.  This is a zipped file.",
+		"linkedServiceName": {
+			"referenceName": "ls_pattern_sftp",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"SourcePath": {
+				"type": "string",
+				"defaultValue": "source"
+			},
+			"SourceFileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"fileName": {
+					"value": "@dataset().SourceFileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().SourcePath",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

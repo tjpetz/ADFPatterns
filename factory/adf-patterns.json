@@ -1,0 +1,9 @@
+{
+	"name": "adf-patterns",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "ef1c6676-3029-4f8a-9dd5-b34cd7df30ff",
+		"tenantId": "fca8a7af-3be0-485c-a8fb-1777a6a80a5b"
+	}
+}
