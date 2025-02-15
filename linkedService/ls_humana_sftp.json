@@ -1,0 +1,23 @@
+{
+	"name": "ls_humana_sftp",
+	"properties": {
+		"description": "Linked service connection to Humana SFTP server",
+		"annotations": [],
+		"type": "Sftp",
+		"typeProperties": {
+			"host": "tjpsftpsource0001.blob.core.windows.net",
+			"port": 22,
+			"skipHostKeyValidation": true,
+			"authenticationType": "Basic",
+			"userName": "tjpsftpsource0001.humana",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ls_pattern_kv",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "humana-sftp-password"
+			}
+		}
+	}
+}
