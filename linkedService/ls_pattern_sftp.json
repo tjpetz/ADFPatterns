@@ -34,7 +34,10 @@
 					"referenceName": "ls_pattern_kv",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "adf-pattern-sftp-password"
+				"secretName": {
+					"value": "@linkedService().sftp_kv_password",
+					"type": "Expression"
+				}
 			}
 		}
 	},
