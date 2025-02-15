@@ -13,11 +13,11 @@
 			},
 			"sftp_user_name": {
 				"type": "string",
-				"defaultValue": "tjpsftpsource0001.test"
+				"defaultValue": "tjpsftpsource0001.humana"
 			},
 			"sftp_kv_password": {
 				"type": "string",
-				"defaultValue": "adf-pattern-sftp-password"
+				"defaultValue": "humana-sftp-password"
 			}
 		},
 		"annotations": [],
