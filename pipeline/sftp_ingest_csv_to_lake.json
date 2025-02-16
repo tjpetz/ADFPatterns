@@ -145,62 +145,46 @@
 							],
 							"typeProperties": {
 								"source": {
-									"type": "DelimitedTextSource",
+									"type": "BinarySource",
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
+										"recursive": true
 									},
 									"formatSettings": {
-										"type": "DelimitedTextReadSettings",
+										"type": "BinaryReadSettings",
 										"compressionProperties": {
 											"type": "ZipDeflateReadSettings",
 											"preserveZipFileNameAsFolder": false
 										}
 									}
 								},
-								"sink": {
-									"type": "DelimitedTextSink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
-									},
-									"formatSettings": {
-										"type": "DelimitedTextWriteSettings",
-										"quoteAllText": true,
-										"fileExtension": ""
-									}
-								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
+								"enableStaging": false
 							},
 							"inputs": [
 								{
-									"referenceName": "ds_humana_source_unzipped",
-									"type": "DatasetReference",
-									"parameters": {
-										"filename": {
-											"value": "@item().name",
-											"type": "Expression"
-										},
-										"payer": "humana",
-										"folder": "/",
-										"compression_type": "ZipDeflate"
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "DelimitedText1",
+									"referenceName": "Binary1",
 									"type": "DatasetReference"
 								}
 							]
+						},
+						{
+							"name": "If Condition Send to Arcadia",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Decompress File to Source Processed",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(split(item().name, '_'), 'REMBX.ZIP')",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
