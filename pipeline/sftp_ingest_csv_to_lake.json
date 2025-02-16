@@ -135,13 +135,17 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "BinarySource",
+									"type": "DelimitedTextSource",
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
-										"recursive": true
+										"recursive": true,
+										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
-										"type": "BinaryReadSettings"
+										"type": "DelimitedTextReadSettings",
+										"compressionProperties": {
+											"type": "ZipDeflateReadSettings"
+										}
 									}
 								},
 								"sink": {
@@ -155,17 +159,27 @@
 										"fileExtension": ".txt"
 									}
 								},
-								"enableStaging": false
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
 							},
 							"inputs": [
 								{
-									"referenceName": "ds_humana_source_raw",
+									"referenceName": "ds_humana_source_unzipped",
 									"type": "DatasetReference",
 									"parameters": {
 										"filename": {
 											"value": "@item().name",
 											"type": "Expression"
-										}
+										},
+										"payer": "humana",
+										"folder": "/"
 									}
 								}
 							],
@@ -177,7 +191,9 @@
 										"filename": {
 											"value": "@item().name",
 											"type": "Expression"
-										}
+										},
+										"payer": "humana",
+										"folder": "unzipped"
 									}
 								}
 							]
