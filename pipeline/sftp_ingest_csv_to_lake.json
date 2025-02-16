@@ -132,20 +132,26 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": [],
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "raw/@{concat('humana','/','/')}/@{item().name}"
+								},
+								{
+									"name": "Destination",
+									"value": "raw/@{concat('humana','/','unzipped')}/@{item().name}"
+								}
+							],
 							"typeProperties": {
 								"source": {
 									"type": "DelimitedTextSource",
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
-										"recursive": true,
+										"recursive": false,
 										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
-										"type": "DelimitedTextReadSettings",
-										"compressionProperties": {
-											"type": "ZipDeflateReadSettings"
-										}
+										"type": "DelimitedTextReadSettings"
 									}
 								},
 								"sink": {
@@ -179,7 +185,8 @@
 											"type": "Expression"
 										},
 										"payer": "humana",
-										"folder": "/"
+										"folder": "/",
+										"compression_type": "ZipDeflate"
 									}
 								}
 							],
@@ -193,7 +200,8 @@
 											"type": "Expression"
 										},
 										"payer": "humana",
-										"folder": "unzipped"
+										"folder": "unzipped",
+										"compression_type": "No Compression"
 									}
 								}
 							]
