@@ -188,7 +188,7 @@
 											"type": "Expression"
 										},
 										"payer": "humana",
-										"folder": "unzipped",
+										"folder": "/",
 										"compression_type": "ZipDeflate"
 									}
 								}
