@@ -98,7 +98,7 @@
 					},
 					"fieldList": [
 						"itemName",
-						"lastModified",
+						"itemType",
 						"size"
 					],
 					"storeSettings": {
