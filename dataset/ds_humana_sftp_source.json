@@ -1,5 +1,5 @@
 {
-	"name": "humana_sftp_source",
+	"name": "ds_humana_sftp_source",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_humana_sftp",
@@ -11,7 +11,7 @@
 			}
 		},
 		"folder": {
-			"name": "Payer"
+			"name": "Payer/humana"
 		},
 		"annotations": [],
 		"type": "Binary",

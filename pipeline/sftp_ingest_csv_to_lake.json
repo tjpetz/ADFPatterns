@@ -17,7 +17,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "humana_sftp_source",
+						"referenceName": "ds_humana_sftp_source",
 						"type": "DatasetReference",
 						"parameters": {
 							"filename": "*.ZIP"
@@ -89,7 +89,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "humana_sftp_source",
+									"referenceName": "ds_humana_sftp_source",
 									"type": "DatasetReference",
 									"parameters": {
 										"filename": {
@@ -101,12 +101,10 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_datalake_raw",
+									"referenceName": "ds_humana_source_raw",
 									"type": "DatasetReference",
 									"parameters": {
-										"SystemName": "humana",
-										"SubSystemName": "source_raw",
-										"RawFileName": {
+										"filename": {
 											"value": "@item().name",
 											"type": "Expression"
 										}
