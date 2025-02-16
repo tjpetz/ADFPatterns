@@ -183,7 +183,13 @@
 									"referenceName": "ds_humana_source_unzipped",
 									"type": "DatasetReference",
 									"parameters": {
-										"payer": "humana"
+										"filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"payer": "humana",
+										"folder": "unzipped",
+										"compression_type": "ZipDeflate"
 									}
 								}
 							],
