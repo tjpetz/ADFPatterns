@@ -13,7 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "SftpLocation",
-				"fileName": "*.zip"
+				"fileName": "*.ZIP"
 			}
 		}
 	}
