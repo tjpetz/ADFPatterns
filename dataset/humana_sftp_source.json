@@ -1,0 +1,21 @@
+{
+	"name": "humana_sftp_source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_humana_sftp",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Payer"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"fileName": "*.zip",
+				"folderPath": "/humana"
+			}
+		}
+	}
+}
