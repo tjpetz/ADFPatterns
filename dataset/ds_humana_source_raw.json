@@ -22,7 +22,8 @@
 					"value": "@dataset().filename",
 					"type": "Expression"
 				},
-				"folderPath": "source_raw"
+				"folderPath": "humana",
+				"fileSystem": "raw"
 			}
 		}
 	}
