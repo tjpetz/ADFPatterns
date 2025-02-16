@@ -21,7 +21,8 @@
 				"fileName": {
 					"value": "@dataset().filename",
 					"type": "Expression"
-				}
+				},
+				"folderPath": "source_raw"
 			}
 		}
 	}
