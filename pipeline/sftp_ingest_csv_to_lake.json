@@ -147,11 +147,14 @@
 									"type": "DelimitedTextSource",
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
-										"recursive": false,
+										"recursive": true,
 										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
-										"type": "DelimitedTextReadSettings"
+										"type": "DelimitedTextReadSettings",
+										"compressionProperties": {
+											"type": "ZipDeflateReadSettings"
+										}
 									}
 								},
 								"sink": {
@@ -180,13 +183,7 @@
 									"referenceName": "ds_humana_source_unzipped",
 									"type": "DatasetReference",
 									"parameters": {
-										"filename": {
-											"value": "@item().name",
-											"type": "Expression"
-										},
-										"payer": "humana",
-										"folder": "/",
-										"compression_type": "ZipDeflate"
+										"payer": "humana"
 									}
 								}
 							],
