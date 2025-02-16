@@ -18,16 +18,14 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "ds_humana_sftp_source",
-						"type": "DatasetReference",
-						"parameters": {
-							"filename": "*.ZIP"
-						}
+						"type": "DatasetReference"
 					},
 					"fieldList": [
 						"childItems"
 					],
 					"storeSettings": {
 						"type": "SftpReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false,
 						"disableChunking": false
 					},
@@ -91,13 +89,7 @@
 							"inputs": [
 								{
 									"referenceName": "ds_humana_sftp_source",
-									"type": "DatasetReference",
-									"parameters": {
-										"filename": {
-											"value": "@item().name",
-											"type": "Expression"
-										}
-									}
+									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
@@ -153,7 +145,8 @@
 									"formatSettings": {
 										"type": "DelimitedTextReadSettings",
 										"compressionProperties": {
-											"type": "ZipDeflateReadSettings"
+											"type": "ZipDeflateReadSettings",
+											"preserveZipFileNameAsFolder": false
 										}
 									}
 								},
