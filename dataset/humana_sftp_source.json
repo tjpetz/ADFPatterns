@@ -12,8 +12,7 @@
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
-				"type": "SftpLocation",
-				"fileName": "0138497_20250201_REMBX.ZIP"
+				"type": "SftpLocation"
 			}
 		}
 	}
