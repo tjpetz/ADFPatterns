@@ -1,0 +1,19 @@
+{
+	"name": "ds_humana_source_raw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_pattern_datalake",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Payer/humana"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation"
+			}
+		}
+	}
+}
