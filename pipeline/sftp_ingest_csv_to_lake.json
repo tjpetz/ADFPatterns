@@ -55,7 +55,8 @@
 					},
 					"activities": [
 						{
-							"name": "Copy Source to Source Lake",
+							"name": "Copy SFTP to Source Raw",
+							"description": "File remains in original format",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -102,6 +103,75 @@
 							"outputs": [
 								{
 									"referenceName": "ds_humana_source_raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Decompress File to Source Processed",
+							"description": "File will be unzipped",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Copy SFTP to Source Raw",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_humana_source_raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_humana_source_unzipped",
 									"type": "DatasetReference",
 									"parameters": {
 										"filename": {
