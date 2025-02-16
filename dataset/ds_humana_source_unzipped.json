@@ -42,7 +42,11 @@
 			"compressionCodec": "ZipDeflate",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
-			"quoteChar": "\""
+			"quoteChar": "\"",
+			"compressionProperties": {
+				"type": "ZipDeflateReadSettings",
+				"preserveZipFileNameAsFolder": false
+			}
 		},
 		"schema": []
 	}
