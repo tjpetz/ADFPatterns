@@ -93,7 +93,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"filename": {
-											"value": "@item().filename",
+											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
@@ -107,7 +107,7 @@
 										"SystemName": "humana",
 										"SubSystemName": "source_raw",
 										"RawFileName": {
-											"value": "@item().filename",
+											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
