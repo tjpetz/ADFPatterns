@@ -18,7 +18,10 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "ds_humana_sftp_source",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"filename": "*.ZIP"
+						}
 					},
 					"fieldList": [
 						"childItems"
@@ -89,7 +92,13 @@
 							"inputs": [
 								{
 									"referenceName": "ds_humana_sftp_source",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"outputs": [
