@@ -5,6 +5,14 @@
 			"referenceName": "ls_humana_sftp",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"path": {
+				"type": "string"
+			},
+			"filename": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "Payer"
 		},
@@ -12,7 +20,15 @@
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
-				"type": "SftpLocation"
+				"type": "SftpLocation",
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().path",
+					"type": "Expression"
+				}
 			}
 		}
 	}
