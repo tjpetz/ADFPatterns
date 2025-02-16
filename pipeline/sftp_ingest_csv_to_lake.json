@@ -94,12 +94,14 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "humana_sftp_source",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"filename": "*.ZIP"
+						}
 					},
 					"fieldList": [
 						"itemName",
-						"itemType",
-						"size"
+						"itemType"
 					],
 					"storeSettings": {
 						"type": "SftpReadSettings",
