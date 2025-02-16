@@ -13,8 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "SftpLocation",
-				"fileName": "*.zip",
-				"folderPath": "/humana"
+				"fileName": "*.zip"
 			}
 		}
 	}
