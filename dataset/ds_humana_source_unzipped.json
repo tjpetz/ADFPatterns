@@ -8,6 +8,13 @@
 		"parameters": {
 			"filename": {
 				"type": "string"
+			},
+			"payer": {
+				"type": "string",
+				"defaultValue": "humana"
+			},
+			"folder": {
+				"type": "string"
 			}
 		},
 		"folder": {
@@ -22,7 +29,10 @@
 					"value": "@dataset().filename",
 					"type": "Expression"
 				},
-				"folderPath": "humana",
+				"folderPath": {
+					"value": "@concat(dataset().payer,'/',dataset().folder)",
+					"type": "Expression"
+				},
 				"fileSystem": "raw"
 			},
 			"columnDelimiter": ",",
