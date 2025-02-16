@@ -201,7 +201,7 @@
 										},
 										"payer": "humana",
 										"folder": "unzipped",
-										"compression_type": "No Compression"
+										"compression_type": "None"
 									}
 								}
 							]
