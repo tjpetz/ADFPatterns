@@ -178,13 +178,8 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_datalake_raw",
-									"type": "DatasetReference",
-									"parameters": {
-										"SystemName": "PatternSource",
-										"SubSystemName": "Pattern1",
-										"RawFileName": "RawFileName"
-									}
+									"referenceName": "Binary1",
+									"type": "DatasetReference"
 								}
 							]
 						},
