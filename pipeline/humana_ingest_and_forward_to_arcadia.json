@@ -1,5 +1,5 @@
 {
-	"name": "sftp_ingest_csv_to_lake",
+	"name": "humana_ingest_and_forward_to_arcadia",
 	"properties": {
 		"description": "Ingest a CSV (or other text file) from an SFTP site into a data lake.",
 		"activities": [
@@ -141,6 +141,10 @@
 								{
 									"name": "Destination",
 									"value": "raw/@{concat('humana','/','unzipped')}/@{item().name}"
+								},
+								{
+									"name": "FileEnding",
+									"value": "@split(item().name, '_')[2]"
 								}
 							],
 							"typeProperties": {
@@ -158,12 +162,29 @@
 										}
 									}
 								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
 								"enableStaging": false
 							},
 							"inputs": [
 								{
 									"referenceName": "Binary1",
 									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_datalake_raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"SystemName": "PatternSource",
+										"SubSystemName": "Pattern1",
+										"RawFileName": "RawFileName"
+									}
 								}
 							]
 						},
@@ -208,7 +229,7 @@
 			}
 		},
 		"folder": {
-			"name": "Ingest"
+			"name": "Payer/humana"
 		},
 		"annotations": []
 	}
