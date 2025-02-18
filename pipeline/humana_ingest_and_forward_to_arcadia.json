@@ -122,7 +122,7 @@
 						},
 						{
 							"name": "Decompress File to Source Processed",
-							"description": "File will be unzipped",
+							"description": "File will be unzipped and organized by arrival time.",
 							"type": "Copy",
 							"dependsOn": [
 								{
