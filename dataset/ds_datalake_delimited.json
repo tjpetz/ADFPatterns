@@ -1,0 +1,39 @@
+{
+	"name": "ds_datalake_delimited",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_pattern_datalake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"layer": {
+				"type": "string",
+				"defaultValue": "bronze"
+			},
+			"payer": {
+				"type": "string",
+				"defaultValue": "humana"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().payer",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().layer",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
