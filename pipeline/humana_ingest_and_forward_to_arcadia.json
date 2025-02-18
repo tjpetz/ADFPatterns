@@ -273,7 +273,18 @@
 					"items": {
 						"value": "@activity('Get List of Ingested Files').output.childItems",
 						"type": "Expression"
-					}
+					},
+					"activities": [
+						{
+							"name": "Wait1",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					]
 				}
 			}
 		],
