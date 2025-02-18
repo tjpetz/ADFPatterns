@@ -5,6 +5,7 @@
 		"activities": [
 			{
 				"name": "Get List of Files in the Source",
+				"description": "Get a list of all the ZIP files currently on the SFTP site.",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -57,7 +58,7 @@
 					"activities": [
 						{
 							"name": "Copy SFTP to Source Raw",
-							"description": "File remains in original format",
+							"description": "Copy the file from the SFTP source to the raw layer of the lake.  The file remains in exactly its original format (e.g. ZIP remains a ZIP).",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -103,11 +104,16 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_humana_source_raw",
+									"referenceName": "ds_lake_binary_nocompression",
 									"type": "DatasetReference",
 									"parameters": {
 										"filename": {
 											"value": "@item().name",
+											"type": "Expression"
+										},
+										"layer": "source",
+										"payer": {
+											"value": "@pipeline().parameters.payer",
 											"type": "Expression"
 										}
 									}
@@ -152,7 +158,8 @@
 									"type": "BinarySource",
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
-										"recursive": true
+										"recursive": false,
+										"deleteFilesAfterCompletion": false
 									},
 									"formatSettings": {
 										"type": "BinaryReadSettings",
@@ -172,14 +179,33 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "Binary1",
-									"type": "DatasetReference"
+									"referenceName": "ds_datalake_binary_zipped",
+									"type": "DatasetReference",
+									"parameters": {
+										"layer": "source",
+										"payer": "humana",
+										"filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"outputs": [
 								{
-									"referenceName": "Binary1",
-									"type": "DatasetReference"
+									"referenceName": "ds_datalake_binary_zipped",
+									"type": "DatasetReference",
+									"parameters": {
+										"layer": "bronze",
+										"payer": {
+											"value": "@pipeline().parameters.payer",
+											"type": "Expression"
+										},
+										"filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
@@ -207,20 +233,9 @@
 			}
 		],
 		"parameters": {
-			"sftp_address": {
-				"type": "string"
-			},
-			"sftp_port": {
-				"type": "string"
-			},
-			"sftp_username": {
-				"type": "string"
-			},
-			"sftp_password": {
-				"type": "string"
-			},
-			"root_folder": {
-				"type": "string"
+			"payer": {
+				"type": "string",
+				"defaultValue": "humana"
 			}
 		},
 		"folder": {
