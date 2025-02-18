@@ -276,12 +276,42 @@
 					},
 					"activities": [
 						{
-							"name": "Wait1",
-							"type": "Wait",
+							"name": "If Send to Arcadia",
+							"type": "IfCondition",
 							"dependsOn": [],
-							"userProperties": [],
+							"userProperties": [
+								{
+									"name": "val",
+									"value": "@item.name"
+								}
+							],
 							"typeProperties": {
-								"waitTimeInSeconds": 1
+								"expression": {
+									"value": "@contains(item().name, 'REMBEX.ZIP')",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Dont send File to Arcadia",
+										"type": "Wait",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"waitTimeInSeconds": 1
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Send File to Arcadia",
+										"type": "Wait",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"waitTimeInSeconds": 1
+										}
+									}
+								]
 							}
 						}
 					]
