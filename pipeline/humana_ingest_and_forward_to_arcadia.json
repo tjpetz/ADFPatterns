@@ -21,17 +21,21 @@
 						"referenceName": "ds_humana_sftp_source",
 						"type": "DatasetReference",
 						"parameters": {
-							"filename": "*.ZIP"
+							"filename": "*.ZIP",
+							"filesystem": {
+								"value": "@pipeline().parameters.payer",
+								"type": "Expression"
+							},
+							"folder": "/"
 						}
 					},
 					"fieldList": [
 						"childItems"
 					],
 					"storeSettings": {
-						"type": "SftpReadSettings",
+						"type": "AzureBlobFSReadSettings",
 						"recursive": true,
-						"enablePartitionDiscovery": false,
-						"disableChunking": false
+						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
 						"type": "BinaryReadSettings"
@@ -73,10 +77,8 @@
 								"source": {
 									"type": "BinarySource",
 									"storeSettings": {
-										"type": "SftpReadSettings",
-										"recursive": false,
-										"deleteFilesAfterCompletion": false,
-										"disableChunking": false
+										"type": "AzureBlobFSReadSettings",
+										"recursive": false
 									},
 									"formatSettings": {
 										"type": "BinaryReadSettings"
@@ -98,7 +100,12 @@
 										"filename": {
 											"value": "@item().name",
 											"type": "Expression"
-										}
+										},
+										"filesystem": {
+											"value": "@pipeline().parameters.payer",
+											"type": "Expression"
+										},
+										"folder": "/"
 									}
 								}
 							],
@@ -322,11 +329,6 @@
 			"importTimestamp": {
 				"type": "string",
 				"defaultValue": "debug"
-			}
-		},
-		"variables": {
-			"Bob": {
-				"type": "String"
 			}
 		},
 		"folder": {

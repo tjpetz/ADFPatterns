@@ -2,11 +2,17 @@
 	"name": "ds_humana_sftp_source",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ls_humana_sftp",
+			"referenceName": "ls_pattern_datalake",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
 			"filename": {
+				"type": "string"
+			},
+			"filesystem": {
+				"type": "string"
+			},
+			"folder": {
 				"type": "string"
 			}
 		},
@@ -17,9 +23,17 @@
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
-				"type": "SftpLocation",
+				"type": "AzureBlobFSLocation",
 				"fileName": {
 					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().folder",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().filesystem",
 					"type": "Expression"
 				}
 			}
