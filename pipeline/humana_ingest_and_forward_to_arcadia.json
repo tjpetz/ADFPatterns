@@ -239,7 +239,7 @@
 			},
 			"importTimestamp": {
 				"type": "string",
-				"defaultValue": "@concat(formatDateTime(utcNow(), 'yyyy/MM/dd/HH'))"
+				"defaultValue": "debug"
 			}
 		},
 		"folder": {
