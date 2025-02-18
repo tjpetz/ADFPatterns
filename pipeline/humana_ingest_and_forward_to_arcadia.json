@@ -202,7 +202,7 @@
 											"type": "Expression"
 										},
 										"importTimestamp": {
-											"value": "@pipeline().parameters.importTimestamp",
+											"value": "@formatDateTime(pipeline().TriggerTime, 'yyyy/MM/dd/HH')",
 											"type": "Expression"
 										}
 									}
@@ -322,6 +322,11 @@
 			"importTimestamp": {
 				"type": "string",
 				"defaultValue": "debug"
+			}
+		},
+		"variables": {
+			"Bob": {
+				"type": "String"
 			}
 		},
 		"folder": {
