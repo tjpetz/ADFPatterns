@@ -1,0 +1,34 @@
+{
+	"name": "ds_datalake_binary_unzipped",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_pattern_datalake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"layer": {
+				"type": "string",
+				"defaultValue": "bronze"
+			},
+			"payer": {
+				"type": "string",
+				"defaultValue": "humana"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().payer",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().layer",
+					"type": "Expression"
+				}
+			}
+		}
+	}
+}
