@@ -193,16 +193,12 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_datalake_binary_zipped",
+									"referenceName": "ds_datalake_binary_unzipped",
 									"type": "DatasetReference",
 									"parameters": {
 										"layer": "bronze",
 										"payer": {
 											"value": "@pipeline().parameters.payer",
-											"type": "Expression"
-										},
-										"filename": {
-											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
