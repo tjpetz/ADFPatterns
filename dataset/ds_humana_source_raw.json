@@ -8,6 +8,14 @@
 		"parameters": {
 			"filename": {
 				"type": "string"
+			},
+			"layer": {
+				"type": "string",
+				"defaultValue": "source"
+			},
+			"payer": {
+				"type": "string",
+				"defaultValue": "humana"
 			}
 		},
 		"folder": {
@@ -22,8 +30,14 @@
 					"value": "@dataset().filename",
 					"type": "Expression"
 				},
-				"folderPath": "humana",
-				"fileSystem": "raw"
+				"folderPath": {
+					"value": "@dataset().payer",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().layer",
+					"type": "Expression"
+				}
 			}
 		}
 	}
