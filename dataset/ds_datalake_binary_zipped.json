@@ -1,5 +1,5 @@
 {
-	"name": "Binary1",
+	"name": "ds_datalake_binary_zipped",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_pattern_datalake",
