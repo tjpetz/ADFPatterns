@@ -43,7 +43,7 @@
 				}
 			},
 			{
-				"name": "Copy Each Source File",
+				"name": "Copy SFTP to Source to Bronze",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -225,7 +225,7 @@
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
-						"activity": "Copy Each Source File",
+						"activity": "Copy SFTP to Source to Bronze",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -319,6 +319,85 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Signal Humana Files in Bronze Layer",
+				"description": "Post and event to the Event Grid that Humana files are available in Bronze",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "Copy SFTP to Source to Bronze",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
+			},
+			{
+				"name": "Signal Humana Files Sent to Arcadia",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "Send Required File to Arcadia",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
+			},
+			{
+				"name": "Signal Stage Failure",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [
+					{
+						"activity": "Get List of Files in the Source",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Copy SFTP to Source to Bronze",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Get List of Ingested Files",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Send Required File to Arcadia",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
 			}
 		],
 		"parameters": {
