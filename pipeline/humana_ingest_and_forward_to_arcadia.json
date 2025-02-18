@@ -200,6 +200,10 @@
 										"payer": {
 											"value": "@pipeline().parameters.payer",
 											"type": "Expression"
+										},
+										"importTimestamp": {
+											"value": "@pipeline().parameters.importTimestamp",
+											"type": "Expression"
 										}
 									}
 								}
@@ -232,6 +236,10 @@
 			"payer": {
 				"type": "string",
 				"defaultValue": "humana"
+			},
+			"importTimestamp": {
+				"type": "string",
+				"defaultValue": "@concat(formatDateTime(utcNow(), 'yyyy/MM/dd/HH'))"
 			}
 		},
 		"folder": {
