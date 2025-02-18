@@ -249,6 +249,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -273,7 +274,43 @@
 					"items": {
 						"value": "@activity('Get List of Ingested Files').output.childItems",
 						"type": "Expression"
-					}
+					},
+					"activities": [
+						{
+							"name": "If Send File to Arcadia",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@contains(item().name, 'REMBX.ZIP')",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Dont Send to Arcadia",
+										"type": "Wait",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"waitTimeInSeconds": 1
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Send to Arcadia",
+										"type": "Wait",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"waitTimeInSeconds": 1
+										}
+									}
+								]
+							}
+						}
+					]
 				}
 			}
 		],
