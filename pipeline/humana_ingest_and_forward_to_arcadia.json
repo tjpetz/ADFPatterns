@@ -22,11 +22,11 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filename": "*.ZIP",
-							"filesystem": {
+							"filesystem": "sftp",
+							"folder": {
 								"value": "@pipeline().parameters.payer",
 								"type": "Expression"
-							},
-							"folder": "/"
+							}
 						}
 					},
 					"fieldList": [
@@ -101,11 +101,11 @@
 											"value": "@item().name",
 											"type": "Expression"
 										},
-										"filesystem": {
+										"filesystem": "sftp",
+										"folder": {
 											"value": "@pipeline().parameters.payer",
 											"type": "Expression"
-										},
-										"folder": "/"
+										}
 									}
 								}
 							],
