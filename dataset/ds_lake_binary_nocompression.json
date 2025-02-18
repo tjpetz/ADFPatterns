@@ -1,5 +1,5 @@
 {
-	"name": "ds_humana_source_raw",
+	"name": "ds_lake_binary_nocompression",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_pattern_datalake",
@@ -17,9 +17,6 @@
 				"type": "string",
 				"defaultValue": "humana"
 			}
-		},
-		"folder": {
-			"name": "Payer/humana"
 		},
 		"annotations": [],
 		"type": "Binary",
