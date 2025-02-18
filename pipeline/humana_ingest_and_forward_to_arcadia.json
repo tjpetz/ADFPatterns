@@ -273,48 +273,7 @@
 					"items": {
 						"value": "@activity('Get List of Ingested Files').output.childItems",
 						"type": "Expression"
-					},
-					"activities": [
-						{
-							"name": "If Send to Arcadia",
-							"type": "IfCondition",
-							"dependsOn": [],
-							"userProperties": [
-								{
-									"name": "val",
-									"value": "@item.name"
-								}
-							],
-							"typeProperties": {
-								"expression": {
-									"value": "@contains(item().name, 'REMBEX.ZIP')",
-									"type": "Expression"
-								},
-								"ifFalseActivities": [
-									{
-										"name": "Dont send File to Arcadia",
-										"type": "Wait",
-										"dependsOn": [],
-										"userProperties": [],
-										"typeProperties": {
-											"waitTimeInSeconds": 1
-										}
-									}
-								],
-								"ifTrueActivities": [
-									{
-										"name": "Send File to Arcadia",
-										"type": "Wait",
-										"dependsOn": [],
-										"userProperties": [],
-										"typeProperties": {
-											"waitTimeInSeconds": 1
-										}
-									}
-								]
-							}
-						}
-					]
+					}
 				}
 			}
 		],
