@@ -13,6 +13,9 @@
 			"payer": {
 				"type": "string",
 				"defaultValue": "humana"
+			},
+			"importTimestamp": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
