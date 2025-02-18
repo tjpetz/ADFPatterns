@@ -283,7 +283,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@contains(item().name, 'REMBX.ZIP')",
+									"value": "@contains(item().name, 'REMBX.TXT')",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
