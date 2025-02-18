@@ -208,27 +208,72 @@
 									}
 								}
 							]
-						},
-						{
-							"name": "If Condition Send to Arcadia",
-							"type": "IfCondition",
-							"dependsOn": [
-								{
-									"activity": "Decompress File to Source Processed",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"expression": {
-									"value": "@equals(split(item().name, '_'), 'REMBX.ZIP')",
-									"type": "Expression"
-								}
-							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Get List of Ingested Files",
+				"description": "Get the list of files we ingested to the Bronze layer",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Copy Each Source File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_datalake_delimited",
+						"type": "DatasetReference",
+						"parameters": {
+							"layer": "bronze",
+							"payer": {
+								"value": "@concat(pipeline().parameters.payer, '/', pipeline().parameters.importTimestamp)",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "Send Required File to Arcadia",
+				"description": "Iterated over the ingested files and send only the required files to Arcadia.",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get List of Ingested Files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get List of Ingested Files').output.childItems",
+						"type": "Expression"
+					}
 				}
 			}
 		],
