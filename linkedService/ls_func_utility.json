@@ -1,0 +1,13 @@
+{
+	"name": "ls_func_utility",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureFunction",
+		"typeProperties": {
+			"functionAppUrl": "https://tjp-adf-pgp-decrypt.azurewebsites.net",
+			"authentication": "Anonymous",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDRBNzlBRjlGLTZEMUItNENBRS05NjA4LTQzRTJGNkRBOEQwQ18wODM0MWRmZS04ZGE3LTQ4NGYtODgyOC1lNTBmYjU4MWI2ODAiDQp9"
+		}
+	}
+}
