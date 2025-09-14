@@ -17,15 +17,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "ds_datalake_raw_source",
+						"referenceName": "ds_datalake_raw_source_test",
 						"type": "DatasetReference",
 						"parameters": {
 							"SystemName": {
 								"value": "@pipeline().parameters.systemName",
 								"type": "Expression"
-							},
-							"RawFileName": "*",
-							"path": "*"
+							}
 						}
 					},
 					"fieldList": [
@@ -55,6 +53,11 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Year folders').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": false,
 					"activities": [
 						{
 							"name": "Execute Pipeline Get Month Folders",
