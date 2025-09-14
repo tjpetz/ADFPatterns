@@ -1,0 +1,102 @@
+{
+	"name": "Get List of Existing Raw Files",
+	"properties": {
+		"description": "Return an array of existing files in the Raw layer of the data lake.",
+		"activities": [
+			{
+				"name": "Get Year folders",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_datalake_raw_source",
+						"type": "DatasetReference",
+						"parameters": {
+							"SystemName": {
+								"value": "@pipeline().parameters.systemName",
+								"type": "Expression"
+							},
+							"RawFileName": "*",
+							"path": "*"
+						}
+					},
+					"fieldList": [
+						"childItems",
+						"itemName"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "ForEachYearFolder",
+				"description": "For each YearFolder get it's Month folders",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Year folders",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"activities": [
+						{
+							"name": "Execute Pipeline Get Month Folders",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "GetMonthFolders",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"YearFolder": {
+										"value": "@item().name",
+										"type": "Expression"
+									},
+									"System": {
+										"value": "@pipeline().parameters.systemName",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"systemName": {
+				"type": "string",
+				"defaultValue": "humana"
+			}
+		},
+		"variables": {
+			"existingRawFiles": {
+				"type": "Array"
+			}
+		},
+		"annotations": []
+	}
+}
