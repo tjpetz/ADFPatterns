@@ -1,5 +1,5 @@
 {
-	"name": "ds_datalake_raw_target",
+	"name": "ds_datalake_raw_source",
 	"properties": {
 		"description": "Data Set for the Raw layer of the Data Lake",
 		"linkedServiceName": {
@@ -14,6 +14,9 @@
 			"RawFileName": {
 				"type": "string",
 				"defaultValue": "RawFileName"
+			},
+			"path": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -26,7 +29,7 @@
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@concat(dataset().SystemName, '/',  formatDateTime(utcnow(), 'yyyy/MM/dd'))",
+					"value": "@concat(dataset().SystemName, '/', dataset().path)",
 					"type": "Expression"
 				},
 				"fileSystem": "raw"

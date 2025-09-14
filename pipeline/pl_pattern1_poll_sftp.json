@@ -128,7 +128,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_datalake_raw",
+									"referenceName": "ds_datalake_raw_target",
 									"type": "DatasetReference",
 									"parameters": {
 										"SystemName": {
