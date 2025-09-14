@@ -96,6 +96,7 @@
 						"value": "@activity('Get List of Source Files').output.childItems",
 						"type": "Expression"
 					},
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "If File Does Not Exist in Raw",
@@ -112,7 +113,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@contains(variables('rawFileArray'), item())",
+									"value": "@contains(activity('Get List of Raw files').output.childItems, item())",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -180,6 +181,17 @@
 												}
 											}
 										]
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "File Already Exists in Raw",
+										"type": "Wait",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"waitTimeInSeconds": 1
+										}
 									}
 								]
 							}
