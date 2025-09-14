@@ -17,7 +17,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "ds_datalake_raw_source",
+						"referenceName": "ds_datalake_raw_source_folder",
 						"type": "DatasetReference",
 						"parameters": {
 							"SystemName": {
