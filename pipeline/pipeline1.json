@@ -51,20 +51,17 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "ds_raw_binary_root",
+						"referenceName": "ds_datalake_raw_source_leaf",
 						"type": "DatasetReference",
 						"parameters": {
-							"sourceFolder": {
+							"SystemName": {
 								"value": "@pipeline().parameters.sourceName",
 								"type": "Expression"
 							}
 						}
 					},
 					"fieldList": [
-						"childItems",
-						"itemName",
-						"itemType",
-						"lastModified"
+						"itemName"
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
@@ -79,6 +76,8 @@
 				"name": "For Each Source File",
 				"description": "Copy the source file to the raw layer of the lake if it does not already exist in the lake.",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Get List of Source Files",
@@ -120,77 +119,13 @@
 								},
 								"ifFalseActivities": [
 									{
-										"name": "Copy Source to Raw",
-										"type": "Copy",
+										"name": "Wait1",
+										"type": "Wait",
 										"dependsOn": [],
-										"policy": {
-											"timeout": "0.12:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
 										"userProperties": [],
 										"typeProperties": {
-											"source": {
-												"type": "BinarySource",
-												"storeSettings": {
-													"type": "AzureBlobFSReadSettings",
-													"recursive": true,
-													"deleteFilesAfterCompletion": false
-												},
-												"formatSettings": {
-													"type": "BinaryReadSettings"
-												}
-											},
-											"sink": {
-												"type": "BinarySink",
-												"storeSettings": {
-													"type": "AzureBlobFSWriteSettings",
-													"copyBehavior": "PreserveHierarchy"
-												}
-											},
-											"enableStaging": false,
-											"preserve": [
-												"ACL",
-												"Owner",
-												"Group",
-												"Attributes"
-											]
-										},
-										"inputs": [
-											{
-												"referenceName": "ds_source_binary_file",
-												"type": "DatasetReference",
-												"parameters": {
-													"fileName": {
-														"value": "@variables('currentItem')",
-														"type": "Expression"
-													},
-													"sourceRootFolder": {
-														"value": "@pipeline().parameters.sourceName",
-														"type": "Expression"
-													}
-												}
-											}
-										],
-										"outputs": [
-											{
-												"referenceName": "ds_datalake_raw_target",
-												"type": "DatasetReference",
-												"parameters": {
-													"SystemName": {
-														"value": "@pipeline().parameters.sourceName",
-														"type": "Expression"
-													},
-													"SubSystemName": "TempName",
-													"RawFileName": {
-														"value": "@variables('currentItem')",
-														"type": "Expression"
-													}
-												}
-											}
-										]
+											"waitTimeInSeconds": 1
+										}
 									}
 								]
 							}
@@ -220,6 +155,8 @@
 				"name": "Set rawFileArray",
 				"description": "Convert the JSON list of files into a simple format for the compare operation.",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Get List of Raw files",
