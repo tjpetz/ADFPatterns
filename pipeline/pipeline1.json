@@ -155,7 +155,7 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"fileName": {
-														"value": "@activity('Get List of Source Files').output.item",
+														"value": "@variables('currentItem')",
 														"type": "Expression"
 													},
 													"sourceRootFolder": {
