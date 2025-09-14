@@ -52,7 +52,10 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "ds_raw_binary_root",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"sourceFolder": "humana"
+						}
 					},
 					"fieldList": [
 						"childItems",
@@ -66,6 +69,34 @@
 					},
 					"formatSettings": {
 						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "New Files",
+				"description": "Compare the Source files and the Raw Files to identify new files the Source",
+				"type": "Filter",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Get List of Raw files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Get List of Source Files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get List of Raw files').output.itemName",
+						"type": "Expression"
 					}
 				}
 			}
