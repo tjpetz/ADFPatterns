@@ -1,0 +1,27 @@
+{
+	"name": "ds_source_binary",
+	"properties": {
+		"description": "Source data set, treat as binary so no transformation is performed when we move a file from the source to the raw layer.",
+		"linkedServiceName": {
+			"referenceName": "ls_source_adls",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"filepath": {
+				"type": "string",
+				"defaultValue": "humana"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": {
+					"value": "@dataset().filepath",
+					"type": "Expression"
+				}
+			}
+		}
+	}
+}

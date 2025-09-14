@@ -1,0 +1,43 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get List of Source Files",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_source_binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"filepath": "humana"
+						}
+					},
+					"fieldList": [
+						"childItems",
+						"itemName",
+						"itemType",
+						"lastModified"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			}
+		],
+		"annotations": []
+	}
+}
