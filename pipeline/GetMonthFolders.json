@@ -24,14 +24,16 @@
 								"value": "@pipeline().parameters.System",
 								"type": "Expression"
 							},
-							"RawFileName": "*",
+							"RawFileName": "\"*\"",
 							"path": {
 								"value": "@concat(pipeline().parameters.System, '/', pipeline().parameters.YearFolder)",
 								"type": "Expression"
 							}
 						}
 					},
-					"fieldList": [],
+					"fieldList": [
+						"childItems"
+					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
 						"enablePartitionDiscovery": false
