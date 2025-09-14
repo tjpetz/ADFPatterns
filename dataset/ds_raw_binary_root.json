@@ -1,0 +1,17 @@
+{
+	"name": "ds_raw_binary_root",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_pattern_datalake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "raw"
+			}
+		}
+	}
+}
