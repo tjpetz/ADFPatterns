@@ -135,10 +135,6 @@
 											"value": "@pipeline().parameters.SystemName",
 											"type": "Expression"
 										},
-										"SubSystemName": {
-											"value": "@pipeline().parameters.SubSystemName",
-											"type": "Expression"
-										},
 										"RawFileName": {
 											"value": "@item().name",
 											"type": "Expression"
