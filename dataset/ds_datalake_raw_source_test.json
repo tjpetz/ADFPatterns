@@ -1,0 +1,29 @@
+{
+	"name": "ds_datalake_raw_source_test",
+	"properties": {
+		"description": "Data Set for the Raw layer of the Data Lake",
+		"linkedServiceName": {
+			"referenceName": "ls_pattern_datalake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"SystemName": {
+				"type": "string",
+				"defaultValue": "humana"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@concat(dataset().SystemName, '/TempName', '/*/*/*')",
+					"type": "Expression"
+				},
+				"fileSystem": "raw"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
