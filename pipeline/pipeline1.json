@@ -102,11 +102,18 @@
 							"name": "If File Does Not Exist in Raw",
 							"description": "Check if the file exists in Raw.  If not then copy it.  If it exists do nothing.",
 							"type": "IfCondition",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Set currentItem",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@contains(activity('Get List of Raw files').output.childItems, item())",
+									"value": "@contains(variables('currentItem'), item())",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
