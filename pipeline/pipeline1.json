@@ -93,7 +93,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get List of Source Files').output.childItems",
+						"value": "@variables('rawFileArray')",
 						"type": "Expression"
 					},
 					"isSequential": false,
