@@ -11,10 +11,6 @@
 				"type": "string",
 				"defaultValue": "PatternSource"
 			},
-			"RawFileName": {
-				"type": "string",
-				"defaultValue": "RawFileName"
-			},
 			"path": {
 				"type": "string"
 			}
