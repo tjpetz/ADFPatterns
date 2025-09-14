@@ -24,9 +24,8 @@
 								"value": "@pipeline().parameters.System",
 								"type": "Expression"
 							},
-							"RawFileName": "\"*\"",
 							"path": {
-								"value": "@concat(pipeline().parameters.System, '/', pipeline().parameters.YearFolder)",
+								"value": "@pipeline().parameters.YearFolder",
 								"type": "Expression"
 							}
 						}
