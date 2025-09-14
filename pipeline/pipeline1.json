@@ -102,14 +102,7 @@
 							"name": "If File Does Not Exist in Raw",
 							"description": "Check if the file exists in Raw.  If not then copy it.  If it exists do nothing.",
 							"type": "IfCondition",
-							"dependsOn": [
-								{
-									"activity": "Set currentItem",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
@@ -155,7 +148,7 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"fileName": {
-														"value": "@variables('currentItem')",
+														"value": "@activity('Get List of Source Files').output.item",
 														"type": "Expression"
 													},
 													"sourceRootFolder": {
