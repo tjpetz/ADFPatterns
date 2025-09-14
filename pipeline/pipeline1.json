@@ -141,7 +141,13 @@
 										"inputs": [
 											{
 												"referenceName": "ds_source_binary_file",
-												"type": "DatasetReference"
+												"type": "DatasetReference",
+												"parameters": {
+													"sourceRootFolder": {
+														"value": "@pipeline().parameters.sourceName",
+														"type": "Expression"
+													}
+												}
 											}
 										]
 									}
