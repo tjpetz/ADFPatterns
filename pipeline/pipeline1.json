@@ -104,7 +104,14 @@
 							"name": "If File Does Not Exist in Raw",
 							"description": "Check if the file exists in Raw.  If not then copy it.  If it exists do nothing.",
 							"type": "IfCondition",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Set currentItem",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
@@ -136,15 +143,49 @@
 													"type": "BinaryReadSettings"
 												}
 											},
-											"enableStaging": false
+											"sink": {
+												"type": "BinarySink",
+												"storeSettings": {
+													"type": "AzureBlobFSWriteSettings",
+													"copyBehavior": "PreserveHierarchy"
+												}
+											},
+											"enableStaging": false,
+											"preserve": [
+												"ACL",
+												"Owner",
+												"Group",
+												"Attributes"
+											]
 										},
 										"inputs": [
 											{
 												"referenceName": "ds_source_binary_file",
 												"type": "DatasetReference",
 												"parameters": {
+													"fileName": {
+														"value": "@variables('currentItem')",
+														"type": "Expression"
+													},
 													"sourceRootFolder": {
 														"value": "@pipeline().parameters.sourceName",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "ds_datalake_raw",
+												"type": "DatasetReference",
+												"parameters": {
+													"SystemName": {
+														"value": "@pipeline().parameters.sourceName",
+														"type": "Expression"
+													},
+													"SubSystemName": "TempName",
+													"RawFileName": {
+														"value": "@variables('currentItem')",
 														"type": "Expression"
 													}
 												}
@@ -152,6 +193,24 @@
 										]
 									}
 								]
+							}
+						},
+						{
+							"name": "Set currentItem",
+							"description": "set a currentItem variable to be used deeper in this activity as the item() property of the For Each is only available at the top level.",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "currentItem",
+								"value": {
+									"value": "@item().value.name",
+									"type": "Expression"
+								}
 							}
 						}
 					]
@@ -192,6 +251,9 @@
 		"variables": {
 			"rawFileArray": {
 				"type": "Array"
+			},
+			"currentItem": {
+				"type": "String"
 			}
 		},
 		"annotations": []
