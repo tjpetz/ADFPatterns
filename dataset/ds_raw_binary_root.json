@@ -5,11 +5,21 @@
 			"referenceName": "ls_pattern_datalake",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"sourceFolder": {
+				"type": "string",
+				"defaultValue": "humana"
+			}
+		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().sourceFolder",
+					"type": "Expression"
+				},
 				"fileSystem": "raw"
 			}
 		}
