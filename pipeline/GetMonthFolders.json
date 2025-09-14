@@ -1,0 +1,55 @@
+{
+	"name": "GetMonthFolders",
+	"properties": {
+		"description": "Given a Year folder get each Month folder",
+		"activities": [
+			{
+				"name": "Get Month Folders",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_datalake_raw_source",
+						"type": "DatasetReference",
+						"parameters": {
+							"SystemName": {
+								"value": "@pipeline().parameters.System",
+								"type": "Expression"
+							},
+							"RawFileName": "*",
+							"path": {
+								"value": "@concat(pipeline().parameters.System, '/', pipeline().parameters.YearFolder)",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"YearFolder": {
+				"type": "string"
+			},
+			"System": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
