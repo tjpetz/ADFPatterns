@@ -28,6 +28,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -63,6 +64,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -199,6 +201,9 @@
 				"type": "string",
 				"defaultValue": "humana"
 			}
+		},
+		"folder": {
+			"name": "Prototypes"
 		},
 		"annotations": []
 	}

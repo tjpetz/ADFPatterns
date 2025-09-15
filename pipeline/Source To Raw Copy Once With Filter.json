@@ -265,6 +265,9 @@
 				"defaultValue": "humana"
 			}
 		},
+		"folder": {
+			"name": "Prototypes"
+		},
 		"annotations": []
 	}
 }

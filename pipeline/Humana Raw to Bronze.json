@@ -4,22 +4,6 @@
 		"description": "Unzip and categorize Humana files from Raw into Bronze",
 		"activities": [
 			{
-				"name": "Wait1",
-				"type": "Wait",
-				"dependsOn": [
-					{
-						"activity": "Classify Humana File",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"waitTimeInSeconds": 1
-				}
-			},
-			{
 				"name": "Classify Humana File",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
@@ -40,6 +24,81 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "Copy the file from raw classify and unzip",
+				"description": "Copy the file from the raw layer to the classified folder in bronze.  Unzip the file in the process.",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Classify Humana File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_datalake_raw_source_file",
+						"type": "DatasetReference",
+						"parameters": {
+							"SystemName": {
+								"value": "@pipeline().parameters.System",
+								"type": "Expression"
+							},
+							"RawFileName": {
+								"value": "@pipeline().parameters.FileItem.Name",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_datalake_bronze_target_file",
+						"type": "DatasetReference",
+						"parameters": {
+							"SystemName": {
+								"value": "@pipeline().parameters.System",
+								"type": "Expression"
+							},
+							"Category": {
+								"value": "@activity('Classify Humana File').output",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
@@ -48,6 +107,9 @@
 			},
 			"ExistingBronzeFiles": {
 				"type": "object"
+			},
+			"System": {
+				"type": "string"
 			}
 		},
 		"folder": {

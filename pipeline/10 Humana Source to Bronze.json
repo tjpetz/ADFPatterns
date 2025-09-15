@@ -194,6 +194,10 @@
 									"ExistingBronzeFiles": {
 										"value": "@activity('Get List of Bronze Files').output.childItems",
 										"type": "Expression"
+									},
+									"System": {
+										"value": "@pipeline().parameters.sourceName",
+										"type": "Expression"
 									}
 								}
 							}
