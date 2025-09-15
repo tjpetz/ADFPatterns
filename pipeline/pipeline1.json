@@ -196,14 +196,6 @@
 				"defaultValue": "humana"
 			}
 		},
-		"variables": {
-			"rawFileArray": {
-				"type": "Array"
-			},
-			"currentItem": {
-				"type": "String"
-			}
-		},
 		"annotations": []
 	}
 }
