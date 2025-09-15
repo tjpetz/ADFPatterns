@@ -76,7 +76,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Filter Files to Copy",
+						"activity": "Select Source Files to Copy",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -173,7 +173,7 @@
 				}
 			},
 			{
-				"name": "Filter Files to Copy",
+				"name": "Select Source Files to Copy",
 				"description": "Filter the source list to remove any files already in the raw layer of the lake.",
 				"type": "Filter",
 				"dependsOn": [
