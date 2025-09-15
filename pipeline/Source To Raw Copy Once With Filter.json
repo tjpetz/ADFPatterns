@@ -186,6 +186,44 @@
 									}
 								}
 							}
+						},
+						{
+							"name": "Categorize and Unzip to Bronze",
+							"description": "Unzip the humana file and place it into category folders in the data lake",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Filter out files already in Bronze",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"enableStaging": false
+							}
+						},
+						{
+							"name": "Filter out files already in Bronze",
+							"description": "Remove any files already in the bronze layer of the lake.",
+							"type": "Filter",
+							"dependsOn": [
+								{
+									"activity": "Classify File Type",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": []
 						}
 					]
 				}

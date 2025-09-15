@@ -1,0 +1,21 @@
+{
+	"name": "Humana Raw to Bronze",
+	"properties": {
+		"description": "Unzip and categorize Humana files from Raw into Bronze",
+		"activities": [
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			}
+		],
+		"folder": {
+			"name": "Child Pipelines"
+		},
+		"annotations": []
+	}
+}

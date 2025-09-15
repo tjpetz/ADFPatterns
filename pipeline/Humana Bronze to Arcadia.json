@@ -1,0 +1,21 @@
+{
+	"name": "Humana Bronze to Arcadia",
+	"properties": {
+		"description": "Encrypt and transmit file to Arcadia",
+		"activities": [
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			}
+		],
+		"folder": {
+			"name": "Child Pipelines"
+		},
+		"annotations": []
+	}
+}
