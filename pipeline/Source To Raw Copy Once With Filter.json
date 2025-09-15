@@ -85,7 +85,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Filter Files to Copy').output",
+						"value": "@activity('Select Source Files to Copy').output",
 						"type": "Expression"
 					},
 					"isSequential": false,
