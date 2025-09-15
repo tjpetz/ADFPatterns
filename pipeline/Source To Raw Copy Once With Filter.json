@@ -1,7 +1,7 @@
 {
 	"name": "Source To Raw Copy Once With Filter",
 	"properties": {
-		"description": "Copy source files to the raw layer of the lake.  Each file in source is copied once and only once.",
+		"description": "Copy source files to the raw layer of the lake.  Each file in source is copied once and only once.  Files are filtered rather than burying them deep in an if condition.",
 		"activities": [
 			{
 				"name": "Get List of Source Files",
@@ -194,11 +194,6 @@
 			"sourceName": {
 				"type": "string",
 				"defaultValue": "humana"
-			}
-		},
-		"variables": {
-			"CurrentItem": {
-				"type": "String"
 			}
 		},
 		"annotations": []
