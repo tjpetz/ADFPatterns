@@ -1,6 +1,7 @@
 {
-	"name": "pipeline1",
+	"name": "Source To Raw Copy Once",
 	"properties": {
+		"description": "Copy source files to the raw layer of the lake.  Each file in source is copied once and only once.",
 		"activities": [
 			{
 				"name": "Get List of Source Files",
