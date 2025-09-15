@@ -10,12 +10,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@split(pipeline().parameters.FileName, '_')[2]",
+						"value": "@split(\n    string(\n        split(pipeline().parameters.FileName, '_')[2]\n        ), \n    '.')[0]",
 						"type": "Expression"
 					},
 					"cases": [
 						{
-							"value": "REMBX.ZIP",
+							"value": "REMBX",
 							"activities": [
 								{
 									"name": "Set File Classification Type",
@@ -43,7 +43,7 @@
 							]
 						},
 						{
-							"value": "RECAP.ZIP",
+							"value": "RECAP",
 							"activities": [
 								{
 									"name": "Set Classification - Capitation",
