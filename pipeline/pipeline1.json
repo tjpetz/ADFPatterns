@@ -197,6 +197,8 @@
 							"name": "Set currentItem",
 							"description": "set a currentItem variable to be used deeper in this activity as the item() property of the For Each is only available at the top level.",
 							"type": "SetVariable",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"secureOutput": false,
