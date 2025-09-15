@@ -45,6 +45,9 @@
 		"parameters": {
 			"FileItem": {
 				"type": "object"
+			},
+			"ExistingBronzeFiles": {
+				"type": "object"
 			}
 		},
 		"folder": {
