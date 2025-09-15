@@ -23,10 +23,7 @@
 						}
 					},
 					"fieldList": [
-						"childItems",
-						"itemName",
-						"itemType",
-						"lastModified"
+						"childItems"
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
@@ -93,7 +90,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@variables('rawFileArray')",
+						"value": "@activity('Get List of Source Files').output.childItems",
 						"type": "Expression"
 					},
 					"isSequential": false,
@@ -113,7 +110,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@contains(variables('currentItem'), item())",
+									"value": "@contains(activity('Get List of Raw files').output.childItems, item())",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -209,7 +206,7 @@
 							"typeProperties": {
 								"variableName": "currentItem",
 								"value": {
-									"value": "@item().name",
+									"value": "@item()",
 									"type": "Expression"
 								}
 							}
