@@ -85,13 +85,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Select Source Files to Copy').output",
+						"value": "@activity('Select Source Files to Copy').output.value",
 						"type": "Expression"
 					},
 					"isSequential": false,
 					"activities": [
 						{
-							"name": "Copy Source to Raw_copy1",
+							"name": "Copy Source to Raw",
 							"description": "Copy the source file to the Raw layer of the data lake.",
 							"type": "Copy",
 							"dependsOn": [],
@@ -121,20 +121,7 @@
 										"type": "AzureBlobFSWriteSettings"
 									}
 								},
-								"enableStaging": false,
-								"logSettings": {
-									"enableCopyActivityLog": true,
-									"copyActivityLogSettings": {
-										"logLevel": "Info",
-										"enableReliableLogging": false
-									},
-									"logLocationSettings": {
-										"linkedServiceName": {
-											"referenceName": "ls_pattern_logs",
-											"type": "LinkedServiceReference"
-										}
-									}
-								}
+								"enableStaging": false
 							},
 							"inputs": [
 								{
@@ -207,6 +194,11 @@
 			"sourceName": {
 				"type": "string",
 				"defaultValue": "humana"
+			}
+		},
+		"variables": {
+			"CurrentItem": {
+				"type": "String"
 			}
 		},
 		"annotations": []
