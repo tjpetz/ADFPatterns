@@ -1,0 +1,115 @@
+{
+	"name": "Classify Humana File",
+	"properties": {
+		"activities": [
+			{
+				"name": "Classify File Type",
+				"description": "Pattern match the file name to classify the file type.",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@split(pipeline().parameters.FileName, '_')[2]",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "REMBX.ZIP",
+							"activities": [
+								{
+									"name": "Set File Classification Type",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "pipelineReturnValue",
+										"value": [
+											{
+												"key": "FileClassification",
+												"value": {
+													"type": "String",
+													"content": "Membership"
+												}
+											}
+										],
+										"setSystemVariable": true
+									}
+								}
+							]
+						},
+						{
+							"value": "RECAP.ZIP",
+							"activities": [
+								{
+									"name": "Set Classification - Capitation",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "pipelineReturnValue",
+										"value": [
+											{
+												"key": "FileClassification",
+												"value": {
+													"type": "String",
+													"content": "Capitation"
+												}
+											}
+										],
+										"setSystemVariable": true
+									}
+								}
+							]
+						}
+					],
+					"defaultActivities": [
+						{
+							"name": "Set File Classification",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pipelineReturnValue",
+								"value": [
+									{
+										"key": "FileClassification",
+										"value": {
+											"type": "String",
+											"content": "Unknown"
+										}
+									}
+								],
+								"setSystemVariable": true
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"FileName": {
+				"type": "string",
+				"defaultValue": "00001_20250925_REMBX.ZIP"
+			}
+		},
+		"variables": {
+			"FileClassificationType": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
