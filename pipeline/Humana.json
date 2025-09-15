@@ -64,6 +64,30 @@
 					},
 					"waitOnCompletion": true
 				}
+			},
+			{
+				"name": "Bronze to Finance",
+				"description": "Send select bronze files to Finance.",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Raw To Bronze",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Humana Bronze to Finance",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"annotations": []
