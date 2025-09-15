@@ -110,6 +110,9 @@
 				"type": "String"
 			}
 		},
+		"folder": {
+			"name": "Prototypes"
+		},
 		"annotations": []
 	}
 }

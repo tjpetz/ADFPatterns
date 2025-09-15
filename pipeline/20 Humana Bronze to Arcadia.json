@@ -1,5 +1,5 @@
 {
-	"name": "Humana Bronze to Arcadia",
+	"name": "20 Humana Bronze to Arcadia",
 	"properties": {
 		"description": "Encrypt and transmit file to Arcadia",
 		"activities": [
@@ -14,7 +14,7 @@
 			}
 		],
 		"folder": {
-			"name": "Child Pipelines"
+			"name": "Humana"
 		},
 		"annotations": []
 	}

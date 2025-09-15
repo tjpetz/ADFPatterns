@@ -1,7 +1,7 @@
 {
 	"name": "Humana",
 	"properties": {
-		"description": "Process Humana files from Source",
+		"description": "Example Process Humana files from Source through to Arcadia and simultaneously to Finance.",
 		"activities": [
 			{
 				"name": "Source To Raw",
@@ -59,7 +59,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Humana Bronze to Arcadia",
+						"referenceName": "20 Humana Bronze to Arcadia",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -90,6 +90,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "Prototypes"
+		},
 		"annotations": []
 	}
 }
