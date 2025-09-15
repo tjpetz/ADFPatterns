@@ -81,7 +81,7 @@
 						]
 					},
 					{
-						"activity": "Set rawFileArray",
+						"activity": "Get List of Raw files",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -99,14 +99,7 @@
 							"name": "If File Does Not Exist in Raw",
 							"description": "Check if the file exists in Raw.  If not then copy it.  If it exists do nothing.",
 							"type": "IfCondition",
-							"dependsOn": [
-								{
-									"activity": "Set currentItem",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
@@ -192,53 +185,8 @@
 									}
 								]
 							}
-						},
-						{
-							"name": "Set currentItem",
-							"description": "set a currentItem variable to be used deeper in this activity as the item() property of the For Each is only available at the top level.",
-							"type": "SetVariable",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "currentItem",
-								"value": {
-									"value": "@item()",
-									"type": "Expression"
-								}
-							}
 						}
 					]
-				}
-			},
-			{
-				"name": "Set rawFileArray",
-				"description": "Convert the JSON list of files into a simple format for the compare operation.",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Get List of Raw files",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "rawFileArray",
-					"value": {
-						"value": "@array(activity('Get List of Raw files').output.childItems)",
-						"type": "Expression"
-					}
 				}
 			}
 		],
