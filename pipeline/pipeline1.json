@@ -125,7 +125,8 @@
 												"type": "BinarySource",
 												"storeSettings": {
 													"type": "AzureBlobFSReadSettings",
-													"recursive": true
+													"recursive": false,
+													"deleteFilesAfterCompletion": false
 												},
 												"formatSettings": {
 													"type": "BinaryReadSettings"
@@ -137,7 +138,20 @@
 													"type": "AzureBlobFSWriteSettings"
 												}
 											},
-											"enableStaging": false
+											"enableStaging": false,
+											"logSettings": {
+												"enableCopyActivityLog": true,
+												"copyActivityLogSettings": {
+													"logLevel": "Info",
+													"enableReliableLogging": false
+												},
+												"logLocationSettings": {
+													"linkedServiceName": {
+														"referenceName": "ls_pattern_logs",
+														"type": "LinkedServiceReference"
+													}
+												}
+											}
 										},
 										"inputs": [
 											{
@@ -145,7 +159,7 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"fileName": {
-														"value": "@variables('currentItem')",
+														"value": "@item().name ",
 														"type": "Expression"
 													},
 													"sourceRootFolder": {
@@ -165,23 +179,12 @@
 														"type": "Expression"
 													},
 													"RawFileName": {
-														"value": "@variables('currentItem')",
+														"value": "@item().name ",
 														"type": "Expression"
 													}
 												}
 											}
 										]
-									}
-								],
-								"ifTrueActivities": [
-									{
-										"name": "File Already Exists in Raw",
-										"type": "Wait",
-										"dependsOn": [],
-										"userProperties": [],
-										"typeProperties": {
-											"waitTimeInSeconds": 1
-										}
 									}
 								]
 							}
