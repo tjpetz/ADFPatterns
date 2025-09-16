@@ -161,6 +161,9 @@
 				"defaultValue": "Pattern1"
 			}
 		},
+		"folder": {
+			"name": "Prototypes"
+		},
 		"annotations": [],
 		"lastPublishTime": "2024-06-27T12:01:47Z"
 	},
