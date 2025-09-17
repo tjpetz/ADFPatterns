@@ -27,7 +27,7 @@
 			},
 			{
 				"name": "If File Is Not in Bronze",
-				"description": "Skip files already in bronze",
+				"description": "Skip files already in bronze.\nNote, humana files have different names once unzipped.  The item() filename is adjusted to match what it will be when unzipped.",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
