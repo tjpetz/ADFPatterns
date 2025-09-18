@@ -1,0 +1,210 @@
+{
+	"name": "Source To Raw Copy Once",
+	"properties": {
+		"description": "Copy source files to the raw layer of the lake.  Each file in source is copied once and only once.",
+		"activities": [
+			{
+				"name": "Get List of Source Files",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_source_binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"filepath": "humana"
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "Get List of Raw files",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_datalake_raw_source_leaf",
+						"type": "DatasetReference",
+						"parameters": {
+							"SystemName": {
+								"value": "@pipeline().parameters.sourceName",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "For Each Source File",
+				"description": "Copy the source file to the raw layer of the lake if it does not already exist in the lake.",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get List of Source Files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Get List of Raw files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get List of Source Files').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "If File Does Not Exist in Raw",
+							"description": "Check if the file exists in Raw.  If not then copy it.  If it exists do nothing.",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@contains(activity('Get List of Raw files').output.childItems, item())",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Copy Source to Raw",
+										"description": "Copy the source file to the Raw layer of the data lake.",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "BinarySource",
+												"storeSettings": {
+													"type": "AzureBlobFSReadSettings",
+													"recursive": false,
+													"deleteFilesAfterCompletion": false
+												},
+												"formatSettings": {
+													"type": "BinaryReadSettings"
+												}
+											},
+											"sink": {
+												"type": "BinarySink",
+												"storeSettings": {
+													"type": "AzureBlobFSWriteSettings"
+												}
+											},
+											"enableStaging": false,
+											"logSettings": {
+												"enableCopyActivityLog": true,
+												"copyActivityLogSettings": {
+													"logLevel": "Info",
+													"enableReliableLogging": false
+												},
+												"logLocationSettings": {
+													"linkedServiceName": {
+														"referenceName": "ls_pattern_logs",
+														"type": "LinkedServiceReference"
+													}
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "ds_source_binary_file",
+												"type": "DatasetReference",
+												"parameters": {
+													"fileName": {
+														"value": "@item().name ",
+														"type": "Expression"
+													},
+													"sourceRootFolder": {
+														"value": "@pipeline().parameters.sourceName",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "ds_datalake_raw_target",
+												"type": "DatasetReference",
+												"parameters": {
+													"SystemName": {
+														"value": "@pipeline().parameters.sourceName",
+														"type": "Expression"
+													},
+													"RawFileName": {
+														"value": "@item().name ",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"sourceName": {
+				"type": "string",
+				"defaultValue": "humana"
+			}
+		},
+		"folder": {
+			"name": "Prototypes"
+		},
+		"annotations": []
+	}
+}

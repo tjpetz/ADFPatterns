@@ -1,0 +1,11 @@
+{
+	"name": "ls_source_adls",
+	"properties": {
+		"description": "The source data lake for prototyping.  This would normally be an SFTP source.  However, SFTP is more expensive than necessary for prototyping purposes.",
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://tjpsftpsource0001.dfs.core.windows.net/"
+		}
+	}
+}

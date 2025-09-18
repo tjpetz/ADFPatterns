@@ -1,0 +1,149 @@
+{
+	"name": "Humana Raw to Bronze",
+	"properties": {
+		"description": "Unzip and categorize Humana files from Raw into Bronze",
+		"activities": [
+			{
+				"name": "Classify Humana File",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Classify Humana File",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"FileName": {
+							"value": "@pipeline().parameters.FileItem.name",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "If File Is Not in Bronze",
+				"description": "Skip files already in bronze.\nNote, humana files have different names once unzipped.  The item() filename is adjusted to match what it will be when unzipped.",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Classify Humana File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(\n  pipeline().parameters.ExistingBronzeFiles,\n    json(\n        replace(\n            concat(\n            '{ \"name\": \"',\n                split(pipeline().parameters.FileItem.Name, '_')[0], '_',\n                'PE', split(pipeline().parameters.FileItem.Name, '_')[1], '_',\n                split(pipeline().parameters.FileItem.Name, '_')[2],\n                    '\", ',\n                '\"type\": \"File\" }'),\n            '.ZIP', '.TXT')\n    )\n)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Copy Classify and Unzip",
+							"description": "Copy the raw folder into the specified category and unzip it.",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": false,
+										"deleteFilesAfterCompletion": false
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings",
+										"compressionProperties": {
+											"type": "ZipDeflateReadSettings",
+											"preserveZipFileNameAsFolder": false
+										}
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings",
+										"copyBehavior": "PreserveHierarchy"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_datalake_raw_source_file",
+									"type": "DatasetReference",
+									"parameters": {
+										"SystemName": {
+											"value": "@pipeline().parameters.System",
+											"type": "Expression"
+										},
+										"RawFileName": {
+											"value": "@pipeline().parameters.FileItem.Name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_datalake_bronze_target_file",
+									"type": "DatasetReference",
+									"parameters": {
+										"SystemName": {
+											"value": "@pipeline().parameters.System",
+											"type": "Expression"
+										},
+										"Category": {
+											"value": "@activity('Classify Humana File').output.pipelineReturnValue.FileClassification",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"FileItem": {
+				"type": "object",
+				"defaultValue": {
+					"name": "0138497_20250201_REMBX.ZIP",
+					"type": "File"
+				}
+			},
+			"ExistingBronzeFiles": {
+				"type": "object",
+				"defaultValue": [
+					{
+						"name": "0138497_PE20250201_REMBX.TXT",
+						"type": "File"
+					}
+				]
+			},
+			"System": {
+				"type": "string",
+				"defaultValue": "humana"
+			}
+		},
+		"folder": {
+			"name": "Humana/Child Pipelines"
+		},
+		"annotations": []
+	}
+}

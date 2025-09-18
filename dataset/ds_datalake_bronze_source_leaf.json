@@ -1,0 +1,29 @@
+{
+	"name": "ds_datalake_bronze_source_leaf",
+	"properties": {
+		"description": "Use this data set when getting a list of all files in the bronze layer for a given System.  Organization is /bronze/System/Classification/YYYY/MM/DD\n\nNote, uses wildcards in the path to support full traversal to the leaf level.",
+		"linkedServiceName": {
+			"referenceName": "ls_pattern_datalake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"SystemName": {
+				"type": "string",
+				"defaultValue": "humana"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@concat(dataset().SystemName, '/*/*/*/*')",
+					"type": "Expression"
+				},
+				"fileSystem": "bronze"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

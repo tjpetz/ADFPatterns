@@ -1,0 +1,21 @@
+{
+	"name": "Humana Source to Raw",
+	"properties": {
+		"description": "Ingest Humana source files to Raw",
+		"activities": [
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			}
+		],
+		"folder": {
+			"name": "Humana/Child Pipelines"
+		},
+		"annotations": []
+	}
+}

@@ -128,15 +128,11 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "ds_datalake_raw",
+									"referenceName": "ds_datalake_raw_target",
 									"type": "DatasetReference",
 									"parameters": {
 										"SystemName": {
 											"value": "@pipeline().parameters.SystemName",
-											"type": "Expression"
-										},
-										"SubSystemName": {
-											"value": "@pipeline().parameters.SubSystemName",
 											"type": "Expression"
 										},
 										"RawFileName": {
@@ -164,6 +160,9 @@
 				"type": "string",
 				"defaultValue": "Pattern1"
 			}
+		},
+		"folder": {
+			"name": "Prototypes"
 		},
 		"annotations": [],
 		"lastPublishTime": "2024-06-27T12:01:47Z"

@@ -1,0 +1,118 @@
+{
+	"name": "Classify Humana File",
+	"properties": {
+		"activities": [
+			{
+				"name": "Classify File Type",
+				"description": "Pattern match the file name to classify the file type.",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@split(\n    string(\n        split(pipeline().parameters.FileName, '_')[2]\n        ), \n    '.')[0]",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "REMBX",
+							"activities": [
+								{
+									"name": "Set File Classification Type",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "pipelineReturnValue",
+										"value": [
+											{
+												"key": "FileClassification",
+												"value": {
+													"type": "String",
+													"content": "Membership"
+												}
+											}
+										],
+										"setSystemVariable": true
+									}
+								}
+							]
+						},
+						{
+							"value": "RECAP",
+							"activities": [
+								{
+									"name": "Set Classification - Capitation",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "pipelineReturnValue",
+										"value": [
+											{
+												"key": "FileClassification",
+												"value": {
+													"type": "String",
+													"content": "Capitation"
+												}
+											}
+										],
+										"setSystemVariable": true
+									}
+								}
+							]
+						}
+					],
+					"defaultActivities": [
+						{
+							"name": "Set File Classification",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pipelineReturnValue",
+								"value": [
+									{
+										"key": "FileClassification",
+										"value": {
+											"type": "String",
+											"content": "Unknown"
+										}
+									}
+								],
+								"setSystemVariable": true
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"FileName": {
+				"type": "string",
+				"defaultValue": "00001_20250925_REMBX.ZIP"
+			}
+		},
+		"variables": {
+			"FileClassificationType": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Humana/Child Pipelines"
+		},
+		"annotations": []
+	}
+}

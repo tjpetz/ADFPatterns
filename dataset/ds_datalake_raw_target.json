@@ -1,0 +1,37 @@
+{
+	"name": "ds_datalake_raw_target",
+	"properties": {
+		"description": "Data Set for the Raw layer of the Data Lake",
+		"linkedServiceName": {
+			"referenceName": "ls_pattern_datalake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"SystemName": {
+				"type": "string",
+				"defaultValue": "PatternSource"
+			},
+			"RawFileName": {
+				"type": "string",
+				"defaultValue": "RawFileName"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().RawFileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@concat(dataset().SystemName, '/',  formatDateTime(utcnow(), 'yyyy/MM/dd'))",
+					"type": "Expression"
+				},
+				"fileSystem": "raw"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,7 +1,7 @@
 {
-	"name": "ds_datalake_raw",
+	"name": "ds_datalake_raw_source_file",
 	"properties": {
-		"description": "Data Set for the Raw layer of the Data Lake",
+		"description": "A specific file in the raw layer of the lake.",
 		"linkedServiceName": {
 			"referenceName": "ls_pattern_datalake",
 			"type": "LinkedServiceReference"
@@ -10,10 +10,6 @@
 			"SystemName": {
 				"type": "string",
 				"defaultValue": "PatternSource"
-			},
-			"SubSystemName": {
-				"type": "string",
-				"defaultValue": "Pattern1"
 			},
 			"RawFileName": {
 				"type": "string",
@@ -30,10 +26,13 @@
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@concat(dataset().SystemName, '/', dataset().SubSystemName, '/', formatDateTime(utcnow(), 'yyyy/MM/dd/HH/mm'))",
+					"value": "@concat(dataset().SystemName, '/',  formatDateTime(utcnow(), 'yyyy/MM/dd'))",
 					"type": "Expression"
 				},
 				"fileSystem": "raw"
+			},
+			"compression": {
+				"type": "ZipDeflate"
 			}
 		}
 	},
