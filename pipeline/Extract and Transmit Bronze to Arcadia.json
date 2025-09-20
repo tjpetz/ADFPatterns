@@ -303,15 +303,31 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_arcadia_target_leaf",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
 			}
 		],
 		"parameters": {
-			"sourceName": {
+			"SourceName": {
 				"type": "string",
 				"defaultValue": "humana"
 			},
-			"targetName": {
+			"TargetName": {
 				"type": "string",
 				"defaultValue": "arcadia"
 			}
