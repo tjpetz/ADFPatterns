@@ -208,6 +208,8 @@
 							"name": "Transmit the file if it does not exist",
 							"description": "If the file is not already sent to arcadia, send it.",
 							"type": "IfCondition",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "PGP Encrypt File",
@@ -218,6 +220,10 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
+								"expression": {
+									"value": "@contains(\n  activity('List of all target files').output.itemName,\n  json('\"name\": ')  \n)",
+									"type": "Expression"
+								},
 								"ifFalseActivities": [
 									{
 										"name": "Copy Extract File to Target",
@@ -287,6 +293,23 @@
 									}
 								]
 							}
+						},
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Debug1",
+								"value": {
+									"value": "@string(contains(activity('List of all extract files').output.childItems, item()))",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
@@ -330,6 +353,11 @@
 			"TargetName": {
 				"type": "string",
 				"defaultValue": "arcadia"
+			}
+		},
+		"variables": {
+			"Debug1": {
+				"type": "String"
 			}
 		},
 		"folder": {
