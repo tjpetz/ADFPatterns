@@ -1,0 +1,34 @@
+{
+	"name": "ds_datalake_extract_target_file",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_pattern_datalake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"targetSystem": {
+				"type": "string",
+				"defaultValue": "arcadia"
+			},
+			"sourceData": {
+				"type": "string",
+				"defaultValue": "humana"
+			}
+		},
+		"folder": {
+			"name": "20 Data Lake"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@concat(dataset().targetSystem, '/', dataset().sourceData, '/', formatDateTime(utcNow(), 'yyyy/MM/dd'))",
+					"type": "Expression"
+				},
+				"fileSystem": "extract"
+			}
+		}
+	}
+}
