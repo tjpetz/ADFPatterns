@@ -119,6 +119,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "List of all target files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"userProperties": [],
@@ -126,8 +132,178 @@
 					"items": {
 						"value": "@activity('Select files to extract').output.value",
 						"type": "Expression"
-					}
+					},
+					"activities": [
+						{
+							"name": "PGP Encrypt File",
+							"description": "Simulate PGP Encrypting the data by copying the file from bronze to extract with an encrypted file name.",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": false,
+										"deleteFilesAfterCompletion": false
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_datalake_bronze_source_file",
+									"type": "DatasetReference",
+									"parameters": {
+										"SourceName": {
+											"value": "@pipeline().parameters.sourceName",
+											"type": "Expression"
+										},
+										"BronzeFileName": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_datalake_extract_target_encrypted_file",
+									"type": "DatasetReference",
+									"parameters": {
+										"TargetSystem": {
+											"value": "@pipeline().parameters.targetName",
+											"type": "Expression"
+										},
+										"SourceSystem": {
+											"value": "@pipeline().parameters.sourceName",
+											"type": "Expression"
+										},
+										"EncryptedFileName": {
+											"value": "@concat(item(), '.gpg')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Transmit the file if it does not exist",
+							"description": "If the file is not already sent to arcadia, send it.",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "PGP Encrypt File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"ifFalseActivities": [
+									{
+										"name": "Copy Extract File to Target",
+										"description": "Copy the encrypted extract file to the arcadia sftp target",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "BinarySource",
+												"storeSettings": {
+													"type": "AzureBlobFSReadSettings",
+													"recursive": true
+												},
+												"formatSettings": {
+													"type": "BinaryReadSettings"
+												}
+											},
+											"sink": {
+												"type": "BinarySink",
+												"storeSettings": {
+													"type": "AzureBlobStorageWriteSettings"
+												}
+											},
+											"enableStaging": false,
+											"preserve": []
+										},
+										"inputs": [
+											{
+												"referenceName": "ds_datalake_extract_target_encrypted_file",
+												"type": "DatasetReference",
+												"parameters": {
+													"TargetSystem": {
+														"value": "@pipeline().parameters.targetName",
+														"type": "Expression"
+													},
+													"SourceSystem": {
+														"value": "@pipeline().parameters.sourceName",
+														"type": "Expression"
+													},
+													"EncryptedFileName": {
+														"value": "@concat(item(), '.gpg')",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "ds_arcadia_target_file",
+												"type": "DatasetReference",
+												"parameters": {
+													"TargetFileName": {
+														"value": "@activity('Select files to extract').output",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						}
+					]
 				}
+			},
+			{
+				"name": "List of all target files",
+				"description": "Get a list of the all the files currently in the target.  Compute the list here to avoid recomputing it within the for each loop.",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
 			}
 		],
 		"parameters": {

@@ -1,5 +1,5 @@
 {
-	"name": "ds_arcadia_target_files",
+	"name": "ds_arcadia_target_leaf",
 	"properties": {
 		"description": "Data set for the arcadia SFTP target.",
 		"linkedServiceName": {
