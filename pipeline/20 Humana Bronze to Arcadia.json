@@ -1,18 +1,141 @@
 {
 	"name": "20 Humana Bronze to Arcadia",
 	"properties": {
-		"description": "Encrypt and transmit file to Arcadia",
+		"description": "Encrypt and transmit file to Arcadia.  Demonstrate checking for required set of files.\n\nThis sends files not already extracted from the bronze layer.  The extract layer is used to save a copy of the outbound file.",
 		"activities": [
 			{
 				"name": "Wait1",
 				"type": "Wait",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Select files to extract",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"waitTimeInSeconds": 1
 				}
+			},
+			{
+				"name": "List of all bronze files",
+				"description": "Get a list of all files for the humana from the leaf level of the bronze lake.",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_datalake_bronze_source_leaf",
+						"type": "DatasetReference",
+						"parameters": {
+							"SystemName": {
+								"value": "@pipeline().parameters.sourceName",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "List of all extract files",
+				"description": "Get a leaf level list of all the extracted files.",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_datalake_extract_source_leaf",
+						"type": "DatasetReference",
+						"parameters": {
+							"targetSystem": {
+								"value": "@pipeline().parameters.targetName",
+								"type": "Expression"
+							},
+							"sourceDataClass": {
+								"value": "@pipeline().parameters.sourceName",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "Select files to extract",
+				"description": "Filter out from the existing bronze files any we've already sent.",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "List of all bronze files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "List of all extract files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('List of all bronze files').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@not(contains(activity('List of all extract files').output.childItems, item()))",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"parameters": {
+			"sourceName": {
+				"type": "string",
+				"defaultValue": "humana"
+			},
+			"targetName": {
+				"type": "string",
+				"defaultValue": "arcadia"
+			}
+		},
 		"folder": {
 			"name": "Humana"
 		},
