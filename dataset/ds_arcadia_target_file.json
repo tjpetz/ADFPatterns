@@ -1,0 +1,29 @@
+{
+	"name": "ds_arcadia_target_file",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_target_adls",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TargetFileName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "30 Target/arcadia"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().TargetFileName",
+					"type": "Expression"
+				},
+				"container": "arcadia"
+			}
+		}
+	}
+}
