@@ -264,6 +264,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -279,7 +280,7 @@
 			}
 		},
 		"folder": {
-			"name": "Humana"
+			"name": "10 Sources/Humana"
 		},
 		"annotations": []
 	}

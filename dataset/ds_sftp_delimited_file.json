@@ -41,6 +41,9 @@
 				"type": "string"
 			}
 		},
+		"folder": {
+			"name": "Prototype"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {

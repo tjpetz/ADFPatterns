@@ -5,6 +5,9 @@
 			"referenceName": "ls_pattern_datalake",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Prototype"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {

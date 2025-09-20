@@ -16,6 +16,9 @@
 				"defaultValue": "Membership"
 			}
 		},
+		"folder": {
+			"name": "20 Data Lake"
+		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {

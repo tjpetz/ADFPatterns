@@ -1,24 +1,8 @@
 {
-	"name": "20 Humana Bronze to Arcadia",
+	"name": "Extract and Transmit Bronze to Arcadia",
 	"properties": {
 		"description": "Encrypt and transmit file to Arcadia.  Demonstrate checking for required set of files.\n\nThis sends files not already extracted from the bronze layer.  The extract layer is used to save a copy of the outbound file.",
 		"activities": [
-			{
-				"name": "Wait1",
-				"type": "Wait",
-				"dependsOn": [
-					{
-						"activity": "Select files to extract",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"waitTimeInSeconds": 1
-				}
-			},
 			{
 				"name": "List of all bronze files",
 				"description": "Get a list of all files for the humana from the leaf level of the bronze lake.",
@@ -124,6 +108,26 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "For Each Bronze File",
+				"description": "Encrypt and copy to the extract layer and then send to Arcadia each bronze file we've not sent",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Select files to extract",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Select files to extract').output.value",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -137,7 +141,7 @@
 			}
 		},
 		"folder": {
-			"name": "Humana"
+			"name": "20 Targets/Arcadia"
 		},
 		"annotations": []
 	}

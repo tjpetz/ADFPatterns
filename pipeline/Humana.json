@@ -59,7 +59,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "20 Humana Bronze to Arcadia",
+						"referenceName": "Extract and Transmit Bronze to Arcadia",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true

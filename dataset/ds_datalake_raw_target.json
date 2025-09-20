@@ -16,6 +16,9 @@
 				"defaultValue": "RawFileName"
 			}
 		},
+		"folder": {
+			"name": "Prototype"
+		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {
