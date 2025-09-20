@@ -1,0 +1,32 @@
+{
+	"name": "ds_datalake_extract_source_leaf",
+	"properties": {
+		"description": "Data set for the extract layer of the lake",
+		"linkedServiceName": {
+			"referenceName": "ls_pattern_datalake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"targetSystem": {
+				"type": "string",
+				"defaultValue": "arcadia"
+			},
+			"sourceDataClass": {
+				"type": "string",
+				"defaultValue": "humana"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@concat(dataset().targetSystem, '/', dataset().sourceDataClass, '/*/*/*')",
+					"type": "Expression"
+				},
+				"fileSystem": "extract"
+			}
+		}
+	}
+}
