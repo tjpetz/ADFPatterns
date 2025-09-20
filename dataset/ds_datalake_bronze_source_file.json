@@ -1,0 +1,37 @@
+{
+	"name": "ds_datalake_bronze_source_file",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_pattern_datalake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"SourceName": {
+				"type": "string",
+				"defaultValue": "humana"
+			},
+			"BronzeFileName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "20 Data Lake"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().BronzeFileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@concat(dataset().SourceName, '/*/*/*')",
+					"type": "Expression"
+				},
+				"fileSystem": "bronze"
+			}
+		}
+	}
+}
