@@ -27,7 +27,7 @@
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@concat(dataset().SourceName, '/*/*/*')",
+					"value": "@concat(dataset().SourceName, '/*/*/*/*')",
 					"type": "Expression"
 				},
 				"fileSystem": "bronze"
