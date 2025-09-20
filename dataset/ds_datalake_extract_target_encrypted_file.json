@@ -1,0 +1,42 @@
+{
+	"name": "ds_datalake_extract_target_encrypted_file",
+	"properties": {
+		"description": "Dataset for the encrypted file in the extract layer.",
+		"linkedServiceName": {
+			"referenceName": "ls_pattern_datalake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TargetSystem": {
+				"type": "string",
+				"defaultValue": "arcadia"
+			},
+			"SourceSystem": {
+				"type": "string",
+				"defaultValue": "humana"
+			},
+			"EncryptedFileName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "20 Data Lake"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().EncryptedFileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@concat(dataset().TargetSystem, '/', dataset().SourceSystem, '/', formatDateTime(utcNow(), 'yyyy/MM/dd'))",
+					"type": "Expression"
+				},
+				"fileSystem": "extract"
+			}
+		}
+	}
+}
