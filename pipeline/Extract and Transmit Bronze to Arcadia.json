@@ -177,7 +177,7 @@
 											"type": "Expression"
 										},
 										"BronzeFileName": {
-											"value": "@item()",
+											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
@@ -197,7 +197,7 @@
 											"type": "Expression"
 										},
 										"EncryptedFileName": {
-											"value": "@concat(item(), '.gpg')",
+											"value": "@concat(item().value, '.gpg')",
 											"type": "Expression"
 										}
 									}
@@ -306,7 +306,24 @@
 							"typeProperties": {
 								"variableName": "Debug1",
 								"value": {
-									"value": "@string(contains(activity('List of all extract files').output.childItems, item()))",
+									"value": "@string(activity('List of all extract files').output.childItems)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable2",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Debut2",
+								"value": {
+									"value": "@string(item())",
 									"type": "Expression"
 								}
 							}
@@ -357,6 +374,9 @@
 		},
 		"variables": {
 			"Debug1": {
+				"type": "String"
+			},
+			"Debut2": {
 				"type": "String"
 			}
 		},
