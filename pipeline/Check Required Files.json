@@ -1,146 +1,25 @@
 {
-	"name": "Extract and Transmit Bronze to Arcadia_copy1",
+	"name": "Check Required Files",
 	"properties": {
-		"description": "Encrypt and transmit file to Arcadia.  Demonstrate checking for required set of files.\n\nThis sends files not already extracted from the bronze layer.  The extract layer is used to save a copy of the outbound file.",
+		"description": "Given a list of files and required file types return true of all the required files are present.\n\nParameters\n\nRequriedFiles - an array of file types that are required.\nFiles - an object of childItems that list a set of files.  This should come from a Get Metadata activity.",
 		"activities": [
-			{
-				"name": "List of all bronze files",
-				"description": "Get a list of all files for the humana from the leaf level of the bronze lake.",
-				"type": "GetMetadata",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "ds_datalake_bronze_source_leaf",
-						"type": "DatasetReference",
-						"parameters": {
-							"SystemName": {
-								"value": "@pipeline().parameters.sourceName",
-								"type": "Expression"
-							}
-						}
-					},
-					"fieldList": [
-						"childItems",
-						"itemName",
-						"itemType"
-					],
-					"storeSettings": {
-						"type": "AzureBlobFSReadSettings",
-						"enablePartitionDiscovery": false
-					},
-					"formatSettings": {
-						"type": "BinaryReadSettings"
-					}
-				}
-			},
-			{
-				"name": "List of all extract files",
-				"description": "Get a leaf level list of all the extracted files.",
-				"type": "GetMetadata",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "ds_datalake_extract_source_leaf",
-						"type": "DatasetReference",
-						"parameters": {
-							"targetSystem": {
-								"value": "@pipeline().parameters.targetName",
-								"type": "Expression"
-							},
-							"sourceDataClass": {
-								"value": "@pipeline().parameters.sourceName",
-								"type": "Expression"
-							}
-						}
-					},
-					"fieldList": [
-						"childItems"
-					],
-					"storeSettings": {
-						"type": "AzureBlobFSReadSettings",
-						"enablePartitionDiscovery": false
-					},
-					"formatSettings": {
-						"type": "BinaryReadSettings"
-					}
-				}
-			},
-			{
-				"name": "Select files to extract",
-				"description": "Filter out from the existing bronze files any we've already sent.  Note in the comparison we need to add the .gpg extension to the bronze file name to match the extract filename.",
-				"type": "Filter",
-				"dependsOn": [
-					{
-						"activity": "List of all bronze files",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "List of all extract files",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@activity('List of all bronze files').output.childItems",
-						"type": "Expression"
-					},
-					"condition": {
-						"value": "@not(contains(activity('List of all extract files').output.childItems, \njson(\n    concat('{\"name\": ' , '\"', item().name, '.gpg\", ',\n            '\"type\": \"File\"}'))\n    )\n)",
-						"type": "Expression"
-					}
-				}
-			},
 			{
 				"name": "Build List of File Types",
 				"description": "Iterate over the collection of files building a new collection of just the file types.",
 				"type": "ForEach",
-				"dependsOn": [
-					{
-						"activity": "List of all extract files",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('List of all extract files').output.childItems",
+						"value": "@pipeline().parameters.Files.childItems",
 						"type": "Expression"
 					},
 					"activities": [
 						{
-							"name": "Append variable1",
+							"name": "Add File to List",
+							"description": "Add the file type to the FileType array.",
 							"type": "AppendVariable",
-							"dependsOn": [
-								{
-									"activity": "Set variable2",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "FileTypes",
@@ -149,53 +28,13 @@
 									"type": "Expression"
 								}
 							}
-						},
-						{
-							"name": "Set variable2",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "Debug2",
-								"value": {
-									"value": "@string(split(split(item().name, '_')[2], '.')[0])",
-									"type": "Expression"
-								}
-							}
 						}
 					]
 				}
 			},
 			{
-				"name": "Set variable3",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Build List of File Types",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "Debug3",
-					"value": {
-						"value": "@string(createArray(pipeline().parameters.RequiredFiles))",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Filter1",
+				"name": "Filter matched files",
+				"description": "Intersect the required files and available files.",
 				"type": "Filter",
 				"dependsOn": [
 					{
@@ -218,11 +57,12 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "If All Files Present",
+				"description": "The matched files list and the required files list must contain the same number of items when all required files are present.",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Filter1",
+						"activity": "Filter matched files",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -231,17 +71,56 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(length(variables('FileTypes')), length(createArray(pipeline().parameters.RequiredFiles)))",
+						"value": "@equals(length(variables('FileTypes')), length(pipeline().parameters.RequiredFiles))",
 						"type": "Expression"
 					},
-					"ifTrueActivities": [
+					"ifFalseActivities": [
 						{
-							"name": "Wait1",
-							"type": "Wait",
+							"name": "Set Return False",
+							"type": "SetVariable",
 							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
-								"waitTimeInSeconds": 1
+								"variableName": "pipelineReturnValue",
+								"value": [
+									{
+										"key": "AllRequiredFilesExist",
+										"value": {
+											"type": "Boolean",
+											"content": false
+										}
+									}
+								],
+								"setSystemVariable": true
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Set Return True",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pipelineReturnValue",
+								"value": [
+									{
+										"key": "AllRequiredFilesExist",
+										"value": {
+											"type": "Boolean",
+											"content": true
+										}
+									}
+								],
+								"setSystemVariable": true
 							}
 						}
 					]
@@ -249,17 +128,28 @@
 			}
 		],
 		"parameters": {
-			"SourceName": {
-				"type": "string",
-				"defaultValue": "humana"
-			},
-			"TargetName": {
-				"type": "string",
-				"defaultValue": "arcadia"
-			},
 			"RequiredFiles": {
+				"type": "array",
+				"defaultValue": [
+					"REMBX",
+					"RECAP",
+					"missing"
+				]
+			},
+			"Files": {
 				"type": "object",
-				"defaultValue": "['REMBX', 'RECAP', 'missing']"
+				"defaultValue": {
+					"childItems": [
+						{
+							"name": "0138497_PE20250201_RECAP.TXT.gpg",
+							"type": "File"
+						},
+						{
+							"name": "0138497_PE20250201_REMBX.TXT.gpg",
+							"type": "File"
+						}
+					]
+				}
 			}
 		},
 		"variables": {
