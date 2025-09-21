@@ -280,7 +280,7 @@
 														"type": "Expression"
 													},
 													"EncryptedFileName": {
-														"value": "@concat(item(), '.gpg')",
+														"value": "@concat(item().name, '.gpg')",
 														"type": "Expression"
 													}
 												}
