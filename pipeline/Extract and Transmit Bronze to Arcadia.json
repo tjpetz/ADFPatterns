@@ -307,8 +307,6 @@
 						{
 							"name": "Set variable1",
 							"type": "SetVariable",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"secureOutput": false,
@@ -318,7 +316,7 @@
 							"typeProperties": {
 								"variableName": "Debug1",
 								"value": {
-									"value": "@string(\n    json(\n    concat('\"name\":' , '\"', item().name, '.gpg', '\", ',\n            '\"type\": \"File\"')\n        )\n    )\n)",
+									"value": "@concat('\"file\": \" \"', string(item().name), '.gpg\", ',\n    '\"type\": \"File\"')",
 									"type": "Expression"
 								}
 							}
