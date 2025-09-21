@@ -22,7 +22,7 @@
 					"value": "@dataset().TempFolder",
 					"type": "Expression"
 				},
-				"fileSystem": "extract"
+				"fileSystem": "datafeeds-temp"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
