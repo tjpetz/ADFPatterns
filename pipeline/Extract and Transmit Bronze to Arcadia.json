@@ -248,7 +248,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@contains(\n    activity('List of all extract files').output.childItems,\n    \n        json(  \n        concat('{\"name\": \"', string(item().name), '.gpg\", ',\n        '\"type\": \"File\"}')\n        )\n)",
+									"value": "@contains(\n    activity('List of all target files').output.childItems,\n    \n        json(  \n        concat('{\"name\": \"', string(item().name), '.gpg\", ',\n        '\"type\": \"File\"}')\n        )\n)",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -350,7 +350,7 @@
 							"typeProperties": {
 								"variableName": "Debug2",
 								"value": {
-									"value": "@string(equals(\n    item().name,\n    concat(item().name, '.gpg')\n    )\n    )",
+									"value": "@string(contains(\n    activity('List of all target files').output.childItems,\n    \n        json(  \n        concat('{\"name\": \"', string(item().name), '.gpg\", ',\n        '\"type\": \"File\"}')\n        )\n))",
 									"type": "Expression"
 								}
 							}
@@ -367,7 +367,7 @@
 							"typeProperties": {
 								"variableName": "Debug3",
 								"value": {
-									"value": "@string(item())",
+									"value": "@string(item().name)",
 									"type": "Expression"
 								}
 							}
