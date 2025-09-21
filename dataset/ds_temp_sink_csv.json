@@ -5,6 +5,11 @@
 			"referenceName": "ls_pattern_datalake",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"TempFolder": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "40 Temp"
 		},
@@ -13,6 +18,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().TempFolder",
+					"type": "Expression"
+				},
 				"fileSystem": "datafeeds-temp"
 			},
 			"columnDelimiter": ",",
