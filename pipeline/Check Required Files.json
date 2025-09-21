@@ -1,7 +1,7 @@
 {
 	"name": "Check Required Files",
 	"properties": {
-		"description": "Given a list of files and required file types return true of all the required files are present.\n\nParameters\n\nRequriedFiles - an array of file types that are required.\nFiles - an object of childItems that list a set of files.  This should come from a Get Metadata activity.",
+		"description": "Given a list of files and required file types return true of all the required files are present.\n\nNote, currently this only works with Humana files as it parses out the file type based on the humana naming conventions.\n\nParameters\n\nRequriedFiles - an array of file types that are required.\nFiles - an object of childItems that list a set of files.  This should come from a Get Metadata activity.",
 		"activities": [
 			{
 				"name": "Build List of File Types",
