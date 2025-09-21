@@ -329,9 +329,26 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "Debut2",
+								"variableName": "Debug2",
 								"value": {
 									"value": "@string(contains(\n    activity('List of all extract files').output.childItems,\n    \n        json(  \n        concat('{\"name\": \"', string(item().name), '.gpg\", ',\n        '\"type\": \"File\"}')\n        )\n))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable3",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Debug3",
+								"value": {
+									"value": "@string(activity('List of all extract files').output.childItems)",
 									"type": "Expression"
 								}
 							}
@@ -384,7 +401,13 @@
 			"Debug1": {
 				"type": "String"
 			},
-			"Debut2": {
+			"Debug2": {
+				"type": "String"
+			},
+			"Debug3": {
+				"type": "String"
+			},
+			"Debug4": {
 				"type": "String"
 			}
 		},
