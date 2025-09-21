@@ -140,26 +140,7 @@
 							"name": "PGP Encrypt File",
 							"description": "Simulate PGP Encrypting the data by copying the file from bronze to extract with an encrypted file name.",
 							"type": "Copy",
-							"dependsOn": [
-								{
-									"activity": "Set variable1",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								},
-								{
-									"activity": "Set variable2",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								},
-								{
-									"activity": "Set variable3",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -314,57 +295,6 @@
 									}
 								]
 							}
-						},
-						{
-							"name": "Set variable1",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "Debug1",
-								"value": {
-									"value": "@string(json(\n    \n    concat('{\"name\": \"', string(item().name), '.gpg\", ',\n    '\"type\": \"File\"}')\n    )\n)",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set variable2",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "Debug2",
-								"value": {
-									"value": "@string(contains(\n    activity('List of all target files').output.childItems,\n    \n        json(  \n        concat('{\"name\": \"', string(item().name), '.gpg\", ',\n        '\"type\": \"File\"}')\n        )\n))",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Set variable3",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "Debug3",
-								"value": {
-									"value": "@string(item().name)",
-									"type": "Expression"
-								}
-							}
 						}
 					]
 				}
@@ -408,20 +338,6 @@
 			"TargetName": {
 				"type": "string",
 				"defaultValue": "arcadia"
-			}
-		},
-		"variables": {
-			"Debug1": {
-				"type": "String"
-			},
-			"Debug2": {
-				"type": "String"
-			},
-			"Debug3": {
-				"type": "String"
-			},
-			"Debug4": {
-				"type": "String"
 			}
 		},
 		"folder": {
