@@ -5,11 +5,6 @@
 			"referenceName": "ls_target_adls",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"TargetFileName": {
-				"type": "string"
-			}
-		},
 		"folder": {
 			"name": "30 Target/arcadia"
 		},
