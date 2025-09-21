@@ -83,7 +83,7 @@
 			},
 			{
 				"name": "Select files to extract",
-				"description": "Filter out from the existing bronze files any we've already sent.",
+				"description": "Filter out from the existing bronze files any we've already sent.  Note in the comparison we need to add the .gpg extension to the bronze file name to match the extract filename.",
 				"type": "Filter",
 				"dependsOn": [
 					{
