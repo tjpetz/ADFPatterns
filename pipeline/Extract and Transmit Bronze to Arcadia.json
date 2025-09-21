@@ -218,8 +218,6 @@
 							"name": "Transmit the file if it does not exist",
 							"description": "If the file is not already sent to arcadia, send it.",
 							"type": "IfCondition",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "PGP Encrypt File",
@@ -231,7 +229,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@contains(\n  activity('List of all target files').output.itemName,\n  json('\"name\": ')  \n)",
+									"value": "@contains(\n    activity('List of all extract files').output.childItems,\n    \n        json(  \n        concat('{\"name\": \"', string(item().name), '.gpg\", ',\n        '\"type\": \"File\"}')\n        )\n)",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -333,7 +331,7 @@
 							"typeProperties": {
 								"variableName": "Debut2",
 								"value": {
-									"value": "@string(item())",
+									"value": "@string(contains(\n    activity('List of all extract files').output.childItems,\n    \n        json(  \n        concat('{\"name\": \"', string(item().name), '.gpg\", ',\n        '\"type\": \"File\"}')\n        )\n))",
 									"type": "Expression"
 								}
 							}
