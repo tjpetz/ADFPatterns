@@ -350,7 +350,7 @@
 							"typeProperties": {
 								"variableName": "Debug2",
 								"value": {
-									"value": "@string(contains(\n    item(),\n    \n        json(  \n        concat('{\"name\": \"', string(item().name), '.gpg\", ',\n        '\"type\": \"File\"}')\n        )\n))",
+									"value": "@string(equals(\n    item().name,\n    concat(item().name, '.gpg')\n    )\n    )",
 									"type": "Expression"
 								}
 							}
