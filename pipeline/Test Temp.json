@@ -6,7 +6,14 @@
 				"name": "Copy data1",
 				"description": "Copy Bronze to Temp with file splitting",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -21,6 +28,8 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
+							"wildcardFolderPath": "largefiles/*/*/*",
+							"wildcardFileName": "*",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
@@ -34,7 +43,7 @@
 						},
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
-							"maxRowsPerFile": 100,
+							"maxRowsPerFile": 10000,
 							"quoteAllText": true,
 							"fileExtension": ""
 						}
@@ -61,14 +70,36 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"TempFolder": {
-								"value": "@pipeline().RunId",
+								"value": "@string(pipeline().TriggerId)",
 								"type": "Expression"
 							}
 						}
 					}
 				]
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Debug1",
+					"value": {
+						"value": "@string(pipeline().RunId)",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"variables": {
+			"Debug1": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "20 Targets/Arcadia"
 		},
