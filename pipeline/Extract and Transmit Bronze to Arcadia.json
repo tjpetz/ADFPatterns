@@ -106,7 +106,7 @@
 						"type": "Expression"
 					},
 					"condition": {
-						"value": "@not(contains(activity('List of all extract files').output.childItems, \njson(\n    concat('\"name\":' , '\"', item().name, '.gpg', '\",',\n            '\"type\": \"File\"'))\n    )\n)",
+						"value": "@not(contains(activity('List of all extract files').output.childItems, \njson(\n    concat('{\"name\": ' , '\"', item().name, '.gpg\", ',\n            '\"type\": \"File\"}'))\n    )\n)",
 						"type": "Expression"
 					}
 				}
@@ -316,7 +316,7 @@
 							"typeProperties": {
 								"variableName": "Debug1",
 								"value": {
-									"value": "@concat('\"file\": \" \"', string(item().name), '.gpg\", ',\n    '\"type\": \"File\"')",
+									"value": "@string(json(\n    \n    concat('{\"name\": \"', string(item().name), '.gpg\", ',\n    '\"type\": \"File\"}')\n    )\n)",
 									"type": "Expression"
 								}
 							}
