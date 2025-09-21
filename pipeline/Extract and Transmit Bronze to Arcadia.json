@@ -308,13 +308,7 @@
 										"outputs": [
 											{
 												"referenceName": "ds_arcadia_target_file",
-												"type": "DatasetReference",
-												"parameters": {
-													"TargetFileName": {
-														"value": "@activity('Select files to extract').output",
-														"type": "Expression"
-													}
-												}
+												"type": "DatasetReference"
 											}
 										]
 									}
