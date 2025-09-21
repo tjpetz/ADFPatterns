@@ -1,0 +1,29 @@
+{
+	"name": "ds_temp_sink_binary",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_pattern_datalake",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"TempFolderName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "40 Temp"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().TempFolderName",
+					"type": "Expression"
+				},
+				"fileSystem": "datafeeds-temp"
+			}
+		}
+	}
+}
