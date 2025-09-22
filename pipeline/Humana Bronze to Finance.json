@@ -1,7 +1,7 @@
 {
 	"name": "Humana Bronze to Finance",
 	"properties": {
-		"description": "Example pipeline sending Humana Files to Finance.",
+		"description": "Dummy example pipeline sending Humana Files to Finance.",
 		"activities": [
 			{
 				"name": "Wait1",
