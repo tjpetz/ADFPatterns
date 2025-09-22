@@ -1,6 +1,7 @@
 {
 	"name": "Test Temp",
 	"properties": {
+		"description": "Test creating a temp directory and splitting files apart in the temp directory.  We'll need to do this for Arcadia to support splits before we encrypt the file.  This will probably also be useful for the actual encryption as we can point to the files to encryp.",
 		"activities": [
 			{
 				"name": "Copy data1",
