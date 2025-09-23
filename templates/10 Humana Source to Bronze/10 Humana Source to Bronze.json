@@ -1,0 +1,859 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name"
+		},
+		"ls_source_adls": {
+			"type": "string"
+		},
+		"ls_pattern_datalake": {
+			"type": "string"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/10 Humana Source to Bronze')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Copy source files to the raw layer of the lake.  Each file in source is copied once and only once.  Files are filtered rather than burying them deep in an if condition.",
+				"activities": [
+					{
+						"name": "Get List of Source Files",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_source_binary",
+								"type": "DatasetReference",
+								"parameters": {
+									"filepath": "humana"
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "Get List of Raw files",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_datalake_raw_source_leaf",
+								"type": "DatasetReference",
+								"parameters": {
+									"SystemName": {
+										"value": "@pipeline().parameters.sourceName",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "For Each Source File",
+						"description": "Copy the source file to the raw layer of the lake.",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Select Source Files to Copy",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Get List of Bronze Files",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Select Source Files to Copy').output.value",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "Copy Source to Raw",
+									"description": "Copy the source file to the Raw layer of the data lake.",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_source_binary_file",
+											"type": "DatasetReference",
+											"parameters": {
+												"fileName": {
+													"value": "@item().name ",
+													"type": "Expression"
+												},
+												"sourceRootFolder": {
+													"value": "@pipeline().parameters.sourceName",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_datalake_raw_target",
+											"type": "DatasetReference",
+											"parameters": {
+												"SystemName": {
+													"value": "@pipeline().parameters.sourceName",
+													"type": "Expression"
+												},
+												"RawFileName": {
+													"value": "@item().name ",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Copy Raw to Bronze",
+									"description": "Categorize and copy the file to bronze.",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Copy Source to Raw",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "Humana Raw to Bronze",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"FileItem": {
+												"value": "@item()",
+												"type": "Expression"
+											},
+											"ExistingBronzeFiles": {
+												"value": "@activity('Get List of Bronze Files').output.childItems",
+												"type": "Expression"
+											},
+											"System": {
+												"value": "@pipeline().parameters.sourceName",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Select Source Files to Copy",
+						"description": "Filter the source list to remove any files already in the raw layer of the lake.",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "Get List of Source Files",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Get List of Raw files",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Get List of Source Files').output.childItems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@not(contains(activity('Get List of Raw files').output.childItems, item()))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Get List of Bronze Files",
+						"description": "Get a list of bronze files.  While used deeper in the pipeline get this list here to avoid continually getting the same list over and over again.",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ds_datalake_bronze_source_leaf",
+								"type": "DatasetReference",
+								"parameters": {
+									"SystemName": {
+										"value": "@pipeline().parameters.sourceName",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"sourceName": {
+						"type": "string",
+						"defaultValue": "humana"
+					}
+				},
+				"folder": {
+					"name": "10 Sources/Humana"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_source_binary')]",
+				"[concat(variables('factoryId'), '/datasets/ds_datalake_raw_source_leaf')]",
+				"[concat(variables('factoryId'), '/datasets/ds_datalake_bronze_source_leaf')]",
+				"[concat(variables('factoryId'), '/datasets/ds_source_binary_file')]",
+				"[concat(variables('factoryId'), '/datasets/ds_datalake_raw_target')]",
+				"[concat(variables('factoryId'), '/pipelines/Humana Raw to Bronze')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_source_binary')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Source data set, treat as binary so no transformation is performed when we move a file from the source to the raw layer.",
+				"linkedServiceName": {
+					"referenceName": "[parameters('ls_source_adls')]",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filepath": {
+						"type": "string",
+						"defaultValue": "humana"
+					}
+				},
+				"folder": {
+					"name": "Prototype"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": {
+							"value": "@dataset().filepath",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_datalake_raw_source_leaf')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Use this data set when getting a list of all files in the raw layer for a given System.  Organization is /System/YYYY/MM/DD.\n\nNote, uses wildcards in the path to support full traversal to the leaf level.",
+				"linkedServiceName": {
+					"referenceName": "[parameters('ls_pattern_datalake')]",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"SystemName": {
+						"type": "string",
+						"defaultValue": "humana"
+					}
+				},
+				"folder": {
+					"name": "20 Data Lake"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@concat(dataset().SystemName, '/*/*/*')",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_datalake_bronze_source_leaf')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Use this data set when getting a list of all files in the bronze layer for a given System.  Organization is /bronze/System/Classification/YYYY/MM/DD\n\nNote, uses wildcards in the path to support full traversal to the leaf level.",
+				"linkedServiceName": {
+					"referenceName": "[parameters('ls_pattern_datalake')]",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"SystemName": {
+						"type": "string",
+						"defaultValue": "humana"
+					}
+				},
+				"folder": {
+					"name": "20 Data Lake"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@concat(dataset().SystemName, '/*/*/*/*')",
+							"type": "Expression"
+						},
+						"fileSystem": "bronze"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_source_binary_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('ls_source_adls')]",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"fileName": {
+						"type": "string"
+					},
+					"sourceRootFolder": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Prototype"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().fileName",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().sourceRootFolder",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_datalake_raw_target')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Data Set for the Raw layer of the Data Lake",
+				"linkedServiceName": {
+					"referenceName": "[parameters('ls_pattern_datalake')]",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"SystemName": {
+						"type": "string",
+						"defaultValue": "PatternSource"
+					},
+					"RawFileName": {
+						"type": "string",
+						"defaultValue": "RawFileName"
+					}
+				},
+				"folder": {
+					"name": "Prototype"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().RawFileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat(dataset().SystemName, '/',  formatDateTime(utcnow(), 'yyyy/MM/dd'))",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Humana Raw to Bronze')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Unzip and categorize Humana files from Raw into Bronze",
+				"activities": [
+					{
+						"name": "Classify Humana File",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Classify Humana File",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"FileName": {
+									"value": "@pipeline().parameters.FileItem.name",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "If File Is Not in Bronze",
+						"description": "Skip files already in bronze.\nNote, humana files have different names once unzipped.  The item() filename is adjusted to match what it will be when unzipped.",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Classify Humana File",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@contains(\n  pipeline().parameters.ExistingBronzeFiles,\n    json(\n        replace(\n            concat(\n            '{ \"name\": \"',\n                split(pipeline().parameters.FileItem.Name, '_')[0], '_',\n                'PE', split(pipeline().parameters.FileItem.Name, '_')[1], '_',\n                split(pipeline().parameters.FileItem.Name, '_')[2],\n                    '\", ',\n                '\"type\": \"File\" }'),\n            '.ZIP', '.TXT')\n    )\n)",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "Copy Classify and Unzip",
+									"description": "Copy the raw folder into the specified category and unzip it.",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings",
+												"compressionProperties": {
+													"type": "ZipDeflateReadSettings",
+													"preserveZipFileNameAsFolder": false
+												}
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings",
+												"copyBehavior": "PreserveHierarchy"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_datalake_raw_source_file",
+											"type": "DatasetReference",
+											"parameters": {
+												"SystemName": {
+													"value": "@pipeline().parameters.System",
+													"type": "Expression"
+												},
+												"RawFileName": {
+													"value": "@pipeline().parameters.FileItem.Name",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_datalake_bronze_target_file",
+											"type": "DatasetReference",
+											"parameters": {
+												"SystemName": {
+													"value": "@pipeline().parameters.System",
+													"type": "Expression"
+												},
+												"Category": {
+													"value": "@activity('Classify Humana File').output.pipelineReturnValue.FileClassification",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"FileItem": {
+						"type": "object",
+						"defaultValue": {
+							"name": "0138497_20250201_REMBX.ZIP",
+							"type": "File"
+						}
+					},
+					"ExistingBronzeFiles": {
+						"type": "object",
+						"defaultValue": [
+							{
+								"name": "0138497_PE20250201_REMBX.TXT",
+								"type": "File"
+							}
+						]
+					},
+					"System": {
+						"type": "string",
+						"defaultValue": "humana"
+					}
+				},
+				"folder": {
+					"name": "10 Sources/Humana/Child Pipelines"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Classify Humana File')]",
+				"[concat(variables('factoryId'), '/datasets/ds_datalake_raw_source_file')]",
+				"[concat(variables('factoryId'), '/datasets/ds_datalake_bronze_target_file')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Classify Humana File')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Classify File Type",
+						"description": "Pattern match the file name to classify the file type.",
+						"type": "Switch",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"on": {
+								"value": "@split(\n    string(\n        split(pipeline().parameters.FileName, '_')[2]\n        ), \n    '.')[0]",
+								"type": "Expression"
+							},
+							"cases": [
+								{
+									"value": "REMBX",
+									"activities": [
+										{
+											"name": "Set File Classification Type",
+											"type": "SetVariable",
+											"dependsOn": [],
+											"policy": {
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"variableName": "pipelineReturnValue",
+												"value": [
+													{
+														"key": "FileClassification",
+														"value": {
+															"type": "String",
+															"content": "Membership"
+														}
+													}
+												],
+												"setSystemVariable": true
+											}
+										}
+									]
+								},
+								{
+									"value": "RECAP",
+									"activities": [
+										{
+											"name": "Set Classification - Capitation",
+											"type": "SetVariable",
+											"dependsOn": [],
+											"policy": {
+												"secureOutput": false,
+												"secureInput": false
+											},
+											"userProperties": [],
+											"typeProperties": {
+												"variableName": "pipelineReturnValue",
+												"value": [
+													{
+														"key": "FileClassification",
+														"value": {
+															"type": "String",
+															"content": "Capitation"
+														}
+													}
+												],
+												"setSystemVariable": true
+											}
+										}
+									]
+								}
+							],
+							"defaultActivities": [
+								{
+									"name": "Set File Classification",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "pipelineReturnValue",
+										"value": [
+											{
+												"key": "FileClassification",
+												"value": {
+													"type": "String",
+													"content": "Unknown"
+												}
+											}
+										],
+										"setSystemVariable": true
+									}
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"FileName": {
+						"type": "string",
+						"defaultValue": "00001_20250925_REMBX.ZIP"
+					}
+				},
+				"variables": {
+					"FileClassificationType": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "10 Sources/Humana/Child Pipelines"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_datalake_raw_source_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "A specific file in the raw layer of the lake.",
+				"linkedServiceName": {
+					"referenceName": "[parameters('ls_pattern_datalake')]",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"SystemName": {
+						"type": "string",
+						"defaultValue": "PatternSource"
+					},
+					"RawFileName": {
+						"type": "string",
+						"defaultValue": "RawFileName"
+					}
+				},
+				"folder": {
+					"name": "20 Data Lake"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().RawFileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat(dataset().SystemName, '/',  formatDateTime(utcnow(), 'yyyy/MM/dd'))",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					},
+					"compression": {
+						"type": "ZipDeflate"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_datalake_bronze_target_file')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Use this data set when getting a list of all files in the bronze layer for a given System.  Organization is /bronze/System/Classification/YYYY/MM/DD\n\nNote, uses wildcards in the path to support full traversal to the leaf level.",
+				"linkedServiceName": {
+					"referenceName": "[parameters('ls_pattern_datalake')]",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"SystemName": {
+						"type": "string",
+						"defaultValue": "humana"
+					},
+					"Category": {
+						"type": "string",
+						"defaultValue": "Membership"
+					}
+				},
+				"folder": {
+					"name": "20 Data Lake"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@concat(dataset().SystemName, '/', dataset().Category, '/', formatDateTime(utcNow(), 'yyyy/MM/dd'))",
+							"type": "Expression"
+						},
+						"fileSystem": "bronze"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
